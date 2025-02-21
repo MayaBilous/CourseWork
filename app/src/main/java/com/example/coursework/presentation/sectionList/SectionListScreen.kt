@@ -48,7 +48,8 @@ fun SectionListScreen(
                 is SectionListEvent.NavigateToSD -> navController.navigate(
                     SectionDetailsNavigation(
                         sectionId = event.sportSectionId,
-                        isAdmin = state.isAdmin
+                        isAdmin = state.isAdmin,
+                        isAddingItem = event.isAddingItem,
                     )
                 )
                 is SectionListEvent.NavigateToA -> navController.navigate(
@@ -96,7 +97,7 @@ fun SectionListScreen(
                         modifier = Modifier
                             .clickable {
                                     viewModel.process(
-                                        NavigateToSectionDetails(item.id)
+                                        NavigateToSectionDetails(item.id, isAddingItem = false)
                                     )
                             })
 
@@ -119,7 +120,11 @@ fun SectionListScreen(
             }
 
             if (state.isAdmin) {
-                Icon(Icons.Default.AddCircle, "")
+                Icon(Icons.Default.AddCircle, "",
+                    modifier = Modifier
+                        .clickable { viewModel.process(
+                            NavigateToSectionDetails(isAddingItem = true)
+                        ) })
             }
         }
     }

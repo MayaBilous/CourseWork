@@ -66,9 +66,11 @@ fun RootScreen() {
                     InformationAboutSportsSectionsViewModel(
                         arg.sectionId,
                         arg.isAdmin,
+
                         DownloadSectionDetailsUseCase(
                             sportSectionListRepository = SportSectionListRepositoryImpl()
-                        )
+                        ),
+                        arg.isAddingItem,
                     )
                 })
             )
@@ -84,7 +86,7 @@ data object AuthNavigation
 data class SectionsListNavigation(val isAdmin: Boolean)
 
 @Serializable
-data class SectionDetailsNavigation(val sectionId: Int, val isAdmin: Boolean)
+data class SectionDetailsNavigation(val sectionId: Int, val isAdmin: Boolean, val isAddingItem: Boolean)
 
 inline fun <VM : ViewModel> viewModelFactory(crossinline f: () -> VM) =
     object : ViewModelProvider.Factory {

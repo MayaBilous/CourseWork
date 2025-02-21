@@ -15,15 +15,17 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class InformationAboutSportsSectionsViewModel(
-    val sectionId: Int,
+    val sectionId: Int = 0,
     val isAdmin: Boolean,
-    private val downloadSectionDetails: DownloadSectionDetails
+    private val downloadSectionDetails: DownloadSectionDetails,
+    val isAddingItem: Boolean
 ) : ViewModel() {
 
     private var _state = MutableStateFlow(
         SectionsDetailsListState(
             sectionId = sectionId,
             isAdmin = isAdmin,
+            isAddingItem = isAddingItem,
             sportSections = SportSections.default
         )
     )
@@ -101,6 +103,7 @@ class InformationAboutSportsSectionsViewModel(
     data class SectionsDetailsListState(
         val sectionId: Int,
         val isAdmin: Boolean,
+        val isAddingItem: Boolean,
         val sportSections: SportSections
     ) {
     }

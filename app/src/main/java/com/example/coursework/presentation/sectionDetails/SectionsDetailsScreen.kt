@@ -57,7 +57,11 @@ fun InformationAboutSportsSections(
                 .fillMaxWidth()
         ) {
             TextField(
-                value = state.sportSections.name,
+                value = if (state.isAddingItem){
+                    ""
+                }else{
+                    state.sportSections.name
+                },
                 onValueChange = { viewModel.process(SectionsInfoUserIntent.ChangeSectionName(it)) },
                 enabled = state.isAdmin,
                 label = { Text("name") }
@@ -65,21 +69,33 @@ fun InformationAboutSportsSections(
         }
 
         TextField(
-            value = state.sportSections.address,
+            value = if (state.isAddingItem){
+                ""
+            }else{
+                state.sportSections.address
+            },
             onValueChange = { viewModel.process(SectionsInfoUserIntent.ChangeAddress(it)) },
             enabled = state.isAdmin,
             label = { Text("address") }
         )
 
         TextField(
-            value = state.sportSections.workingDays,
+            value = if (state.isAddingItem){
+                ""
+            }else{
+                state.sportSections.workingDays
+            },
             onValueChange = {viewModel.process(SectionsInfoUserIntent.ChangeWorkingDays(it)) },
             enabled = state.isAdmin,
             label = { Text("working days") }
         )
 
         TextField(
-            value = state.sportSections.phoneNumber.toString(),
+            value = if (state.isAddingItem){
+                ""
+            }else{
+                state.sportSections.phoneNumber.toString()
+            },
             onValueChange = {viewModel.process(SectionsInfoUserIntent.ChangePhoneNumber(it.toInt()))  },
             enabled = state.isAdmin,
             label = { Text("phone number") }
