@@ -101,7 +101,9 @@ fun SectionListScreen(
                             })
 
                     if (state.isAdmin) {
-                        Icon(Icons.Default.Delete, "")
+                        Icon(Icons.Default.Delete, "",
+                            modifier = Modifier
+                                .clickable { viewModel.process(DeleteElement(item.id)) })
                     }
                 }
             }

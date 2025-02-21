@@ -4,5 +4,5 @@ import com.example.coursework.domain.entity.SportSections
 
 
 interface SportSectionListRepository {
-    suspend fun getList(): List<SportSections>
+    suspend fun getList(): MutableList<SportSections>
 }

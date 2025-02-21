@@ -11,9 +11,9 @@ import androidx.navigation.toRoute
 import com.example.coursework.data.repository.AuthorizationRepositoryImpl
 import com.example.coursework.data.repository.SportSectionListRepositoryImpl
 import com.example.coursework.domain.usecase.CheckAuthorizationUseCase
-import com.example.coursework.domain.usecase.DownloadSectionDetails
+import com.example.coursework.domain.usecase.DeleteSectionUseCase
 import com.example.coursework.domain.usecase.DownloadSectionDetailsUseCase
-import com.example.coursework.domain.usecase.DownloadSectionListUseCase
+import com.example.coursework.domain.usecase.GetSectionListUseCase
 import com.example.coursework.presentation.auth.Authorization
 import com.example.coursework.presentation.auth.mvi.AuthViewModel
 import com.example.coursework.presentation.sectionDetails.InformationAboutSportsSections
@@ -47,7 +47,10 @@ fun RootScreen() {
                 viewModel = viewModel(factory = viewModelFactory {
                     SectionListViewModel(
                         arg.isAdmin,
-                        DownloadSectionListUseCase(
+                        GetSectionListUseCase(
+                            sportSectionListRepository = SportSectionListRepositoryImpl()
+                        ),
+                        DeleteSectionUseCase(
                             sportSectionListRepository = SportSectionListRepositoryImpl()
                         )
                     )

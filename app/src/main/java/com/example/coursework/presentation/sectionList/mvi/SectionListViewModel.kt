@@ -3,7 +3,8 @@ package com.example.coursework.presentation.sectionList.mvi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.coursework.domain.entity.SportSections
-import com.example.coursework.domain.usecase.DownloadSectionList
+import com.example.coursework.domain.usecase.DeleteSection
+import com.example.coursework.domain.usecase.GetSectionList
 import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListUserIntent.InputSearchText
 import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListUserIntent.*
 import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListUserIntent.Sorting
@@ -18,7 +19,8 @@ import kotlinx.coroutines.launch
 
 class SectionListViewModel(
     isAdmin: Boolean,
-    private val downloadSectionList: DownloadSectionList
+    private val getSectionList: GetSectionList,
+    private val deleteSection: DeleteSection
 ) : ViewModel() {
 
     private var _state = MutableStateFlow(SectionListState.default.copy(isAdmin = isAdmin))
@@ -39,6 +41,7 @@ class SectionListViewModel(
                     is Sorting -> soring()
                     is NavigateToSectionDetails -> navigateToSectionDetails(intent.sectionId)
                     is NavigateToAuth -> navigateToAuth()
+                    is DeleteElement -> delete(intent.sectionId)
                 }
             }
         }
@@ -52,7 +55,7 @@ class SectionListViewModel(
     }
 
     private suspend fun loadSportSections() {
-            val sections = downloadSectionList.invoke()
+            val sections = getSectionList.invoke()
             _state.emit(state.value.copy(sportSections = sections))
         }
 
@@ -62,6 +65,10 @@ class SectionListViewModel(
 
     private suspend fun soring() {
         _state.emit(state.value.copy(isSortedAsc = !state.value.isSortedAsc))
+    }
+
+    private suspend fun delete(sectionId: Int) {
+        _state.emit(state.value.copy(sportSections = deleteSection.invoke(sectionId)))
     }
 
     private suspend fun navigateToSectionDetails(sectionId: Int) {
@@ -127,6 +134,7 @@ class SectionListViewModel(
         data object Sorting : SectionListUserIntent
         data class NavigateToSectionDetails (val sectionId: Int) : SectionListUserIntent
         data object NavigateToAuth : SectionListUserIntent
+        data class DeleteElement (val sectionId: Int): SectionListUserIntent
     }
 
     sealed interface SectionListEvent {
