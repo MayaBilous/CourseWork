@@ -1,6 +1,6 @@
 package com.example.coursework.domain.entity
 
-data class SportSections(
+data class SportSection(
     val id: Int,
     val name: String,
     val address: String,
@@ -9,7 +9,7 @@ data class SportSections(
     ) {
 
     companion object {
-        val default = SportSections(
+        val default = SportSection(
             id = 0,
             name = "",
             address = "",

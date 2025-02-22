@@ -5,11 +5,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class DbSection(
-    @PrimaryKey val id: Int,
-    @ColumnInfo(name = "section_name") val sectionName: String,
+data class DbSportSection(
+    @PrimaryKey val id: Long?,
+    @ColumnInfo(name = "sectionName") val sectionName: String,
     @ColumnInfo(name = "district") val district: String,
     @ColumnInfo(name = "address") val address: String,
-    @ColumnInfo(name = "working_days") val workingDays: String,
-    @ColumnInfo(name = "phone_number") val phoneNumber: Int,
+    @ColumnInfo(name = "workingDays") val workingDays: String,
+    @ColumnInfo(name = "phoneNumber") val phoneNumber: Int,
 )

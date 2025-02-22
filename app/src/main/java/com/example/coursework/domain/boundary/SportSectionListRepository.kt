@@ -1,8 +1,8 @@
 package com.example.coursework.domain.boundary
 
-import com.example.coursework.domain.entity.SportSections
+import com.example.coursework.domain.entity.SportSection
 
 
 interface SportSectionListRepository {
-    suspend fun getList(): MutableList<SportSections>
+    suspend fun getList(): MutableList<SportSection>
 }

@@ -2,7 +2,7 @@ package com.example.coursework.presentation.sectionDetails.mvi
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.coursework.domain.entity.SportSections
+import com.example.coursework.domain.entity.SportSection
 import com.example.coursework.domain.usecase.DownloadSectionDetails
 import com.example.coursework.presentation.sectionDetails.mvi.InformationAboutSportsSectionsViewModel.SectionsInfoUserIntent.NavigateToSectionList
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -26,7 +26,7 @@ class InformationAboutSportsSectionsViewModel(
             sectionId = sectionId,
             isAdmin = isAdmin,
             isAddingItem = isAddingItem,
-            sportSections = SportSections.default
+            sportSections = SportSection.default
         )
     )
     val state: StateFlow<SectionsDetailsListState>
@@ -104,7 +104,7 @@ class InformationAboutSportsSectionsViewModel(
         val sectionId: Int,
         val isAdmin: Boolean,
         val isAddingItem: Boolean,
-        val sportSections: SportSections
+        val sportSections: SportSection
     ) {
     }
 

@@ -2,7 +2,7 @@ package com.example.coursework.presentation.sectionList.mvi
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.coursework.domain.entity.SportSections
+import com.example.coursework.domain.entity.SportSection
 import com.example.coursework.domain.usecase.DeleteSection
 import com.example.coursework.domain.usecase.GetSectionList
 import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListUserIntent.InputSearchText
@@ -92,10 +92,10 @@ class SectionListViewModel(
     data class SectionListState(
         val isAdmin: Boolean,
         val searchText: String,
-        val sportSections: List<SportSections>,
+        val sportSections: List<SportSection>,
         val isSortedAsc: Boolean,
     ) {
-        val uiSportSection: List<SportSections>
+        val uiSportSection: List<SportSection>
             get() = sportSections
                 .filter {
                     if (searchText.isEmpty()) {
