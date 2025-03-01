@@ -74,7 +74,7 @@ class InformationAboutSportsSectionsViewModel(
         )
     }
 
-    private suspend fun changePhoneNumber(phoneNumber: Int) {
+    private suspend fun changePhoneNumber(phoneNumber: String) {
         _state.emit(
             state.value.copy(
                 sportSections = _state.value.sportSections.copy(phoneNumber = phoneNumber)
@@ -112,7 +112,7 @@ class InformationAboutSportsSectionsViewModel(
         data class ChangeSectionName(val sectionName: String) : SectionsInfoUserIntent
         data class ChangeAddress(val address: String) : SectionsInfoUserIntent
         data class ChangeWorkingDays(val workingDays: String) : SectionsInfoUserIntent
-        data class ChangePhoneNumber(val phoneNumber: Int) : SectionsInfoUserIntent
+        data class ChangePhoneNumber(val phoneNumber: String) : SectionsInfoUserIntent
         data object NavigateToSectionList : SectionsInfoUserIntent
     }
 

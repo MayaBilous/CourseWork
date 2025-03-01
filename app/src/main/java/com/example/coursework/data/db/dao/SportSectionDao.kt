@@ -19,8 +19,7 @@ interface SportSectionDao {
     @Update
     fun update(dbSection: DbSportSection)
 
-    @Upsert
-    fun insert(dbSection: DbSportSection): Long
+    @Upsert fun insert(vararg dbSection: DbSportSection)
 
     @Delete
     fun delete(dbSection: DbSportSection)

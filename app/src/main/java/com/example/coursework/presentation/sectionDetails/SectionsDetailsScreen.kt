@@ -96,7 +96,7 @@ fun InformationAboutSportsSections(
             }else{
                 state.sportSections.phoneNumber.toString()
             },
-            onValueChange = {viewModel.process(SectionsInfoUserIntent.ChangePhoneNumber(it.toInt()))  },
+            onValueChange = {viewModel.process(SectionsInfoUserIntent.ChangePhoneNumber(it))  },
             enabled = state.isAdmin,
             label = { Text("phone number") }
         )

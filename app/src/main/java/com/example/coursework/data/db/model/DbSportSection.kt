@@ -11,5 +11,5 @@ data class DbSportSection(
     @ColumnInfo(name = "district") val district: String,
     @ColumnInfo(name = "address") val address: String,
     @ColumnInfo(name = "workingDays") val workingDays: String,
-    @ColumnInfo(name = "phoneNumber") val phoneNumber: Int,
+    @ColumnInfo(name = "phoneNumber") val phoneNumber: String,
 )

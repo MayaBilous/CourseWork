@@ -9,8 +9,8 @@ import com.example.coursework.data.db.model.DbLogin
 interface LoginDao {
 
     @Query("SELECT * FROM dblogin")
-    fun getAll(): List<DbLogin>
+    suspend fun getAll(): List<DbLogin>
 
     @Insert
-    fun insert(dbLogin: DbLogin): Long
+    suspend fun insert(vararg dbLogin: DbLogin)
 }

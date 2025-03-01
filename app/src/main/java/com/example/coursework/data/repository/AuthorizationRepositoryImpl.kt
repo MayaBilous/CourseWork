@@ -1,14 +1,16 @@
 package com.example.coursework.data.repository
 
+import com.example.coursework.data.db.SectionDataBaseProvider
+import com.example.coursework.data.repository.mapper.LoginMapper
 import com.example.coursework.domain.boundary.AuthorizationRepository
 import com.example.coursework.domain.entity.Login
 
-class AuthorizationRepositoryImpl: AuthorizationRepository {
+class AuthorizationRepositoryImpl : AuthorizationRepository {
+
+    private val mapper = LoginMapper()
+    private val loginDao = SectionDataBaseProvider.db.LoginDao()
 
     override suspend fun getLogins(): List<Login> {
-        return listOf(
-            Login(userName = "admin", password = "123", isAdmin = true),
-            Login(userName = "user", password = "123", isAdmin = false),
-        )
+        return loginDao.getAll().map { mapper.mapToDomain(it) }
     }
 }
