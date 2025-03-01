@@ -67,11 +67,12 @@ class SectionListViewModel(
         _state.emit(state.value.copy(isSortedAsc = !state.value.isSortedAsc))
     }
 
-    private suspend fun delete(sectionId: Int) {
-        _state.emit(state.value.copy(sportSections = deleteSection.invoke(sectionId)))
+    private suspend fun delete(sectionId: Long) {
+        deleteSection.invoke(sectionId)
+        _state.emit(state.value.copy(sportSections = getSectionList.invoke()))
     }
 
-    private suspend fun navigateToSectionDetails(sectionId: Int, isAddingItem: Boolean) {
+    private suspend fun navigateToSectionDetails(sectionId: Long, isAddingItem: Boolean) {
         _event.emit(
             SectionListEvent.NavigateToSD(
                 sportSectionId = sectionId,
@@ -101,14 +102,14 @@ class SectionListViewModel(
                     if (searchText.isEmpty()) {
                         true
                     } else {
-                        it.name.contains(searchText)
+                        it.sectionName.contains(searchText)
                     }
                 }
                 .let { list ->
                     if (isSortedAsc) {
-                        list.sortedBy { it.name }
+                        list.sortedBy { it.sectionName }
                     } else {
-                        list.sortedByDescending { it.name }
+                        list.sortedByDescending { it.sectionName }
                     }
                 }
         val sortButtonText: String
@@ -131,13 +132,13 @@ class SectionListViewModel(
     sealed interface SectionListUserIntent {
         data class InputSearchText(val searchText: String) : SectionListUserIntent
         data object Sorting : SectionListUserIntent
-        data class NavigateToSectionDetails (val sectionId: Int = 0, val isAddingItem: Boolean) : SectionListUserIntent
+        data class NavigateToSectionDetails(val sectionId: Long = 0, val isAddingItem: Boolean) : SectionListUserIntent
         data object NavigateToAuth : SectionListUserIntent
-        data class DeleteElement (val sectionId: Int): SectionListUserIntent
+        data class DeleteElement(val sectionId: Long): SectionListUserIntent
     }
 
     sealed interface SectionListEvent {
-        data class NavigateToSD(val sportSectionId: Int, val isAdmin: Boolean, val isAddingItem: Boolean) : SectionListEvent
+        data class NavigateToSD(val sportSectionId: Long, val isAdmin: Boolean, val isAddingItem: Boolean) : SectionListEvent
         data object NavigateToA: SectionListEvent
     }
 }

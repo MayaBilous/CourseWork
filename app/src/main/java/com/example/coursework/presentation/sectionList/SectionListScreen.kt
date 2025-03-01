@@ -93,18 +93,18 @@ fun SectionListScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
 
-                    Text(text = item.name,
+                    Text(text = item.sectionName,
                         modifier = Modifier
                             .clickable {
                                     viewModel.process(
-                                        NavigateToSectionDetails(item.id, isAddingItem = false)
+                                        NavigateToSectionDetails(item.id!!, isAddingItem = false)
                                     )
                             })
 
                     if (state.isAdmin) {
                         Icon(Icons.Default.Delete, "",
                             modifier = Modifier
-                                .clickable { viewModel.process(DeleteElement(item.id)) })
+                                .clickable { viewModel.process(DeleteElement(item.id!!)) })
                     }
                 }
             }

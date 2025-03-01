@@ -3,6 +3,7 @@ package com.example.coursework.presentation.sectionDetails
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,11 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.example.coursework.presentation.auth.mvi.AuthUserIntent
 import com.example.coursework.presentation.root.SectionsListNavigation
 import com.example.coursework.presentation.sectionDetails.mvi.InformationAboutSportsSectionsViewModel
 import com.example.coursework.presentation.sectionDetails.mvi.InformationAboutSportsSectionsViewModel.SectionsInfoEvent
 import com.example.coursework.presentation.sectionDetails.mvi.InformationAboutSportsSectionsViewModel.SectionsInfoUserIntent
+import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListUserIntent.NavigateToAuth
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -57,10 +58,10 @@ fun InformationAboutSportsSections(
                 .fillMaxWidth()
         ) {
             TextField(
-                value = if (state.isAddingItem){
+                value = if (state.isAddingItem) {
                     ""
-                }else{
-                    state.sportSections.name
+                } else {
+                    state.sportSection.sectionName
                 },
                 onValueChange = { viewModel.process(SectionsInfoUserIntent.ChangeSectionName(it)) },
                 enabled = state.isAdmin,
@@ -69,10 +70,10 @@ fun InformationAboutSportsSections(
         }
 
         TextField(
-            value = if (state.isAddingItem){
+            value = if (state.isAddingItem) {
                 ""
-            }else{
-                state.sportSections.address
+            } else {
+                state.sportSection.address
             },
             onValueChange = { viewModel.process(SectionsInfoUserIntent.ChangeAddress(it)) },
             enabled = state.isAdmin,
@@ -80,23 +81,23 @@ fun InformationAboutSportsSections(
         )
 
         TextField(
-            value = if (state.isAddingItem){
+            value = if (state.isAddingItem) {
                 ""
-            }else{
-                state.sportSections.workingDays
+            } else {
+                state.sportSection.workingDays
             },
-            onValueChange = {viewModel.process(SectionsInfoUserIntent.ChangeWorkingDays(it)) },
+            onValueChange = { viewModel.process(SectionsInfoUserIntent.ChangeWorkingDays(it)) },
             enabled = state.isAdmin,
             label = { Text("working days") }
         )
 
         TextField(
-            value = if (state.isAddingItem){
+            value = if (state.isAddingItem) {
                 ""
-            }else{
-                state.sportSections.phoneNumber.toString()
+            } else {
+                state.sportSection.phoneNumber
             },
-            onValueChange = {viewModel.process(SectionsInfoUserIntent.ChangePhoneNumber(it))  },
+            onValueChange = { viewModel.process(SectionsInfoUserIntent.ChangePhoneNumber(it)) },
             enabled = state.isAdmin,
             label = { Text("phone number") }
         )
@@ -107,8 +108,21 @@ fun InformationAboutSportsSections(
                 .fillMaxWidth()
 
         ) {
-            Button(onClick = { viewModel.process(SectionsInfoUserIntent.NavigateToSectionList) }) {
-                Text("Ok")
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                if (state.isAdmin) {
+                    Button(onClick = { viewModel.process(SectionsInfoUserIntent.NavigateToSectionList) }) {
+                        Text("Cancel")
+                    }
+                }
+                Button(onClick = {
+                    viewModel.process(SectionsInfoUserIntent.UpdateSportSection(state.sportSection))
+                    viewModel.process(SectionsInfoUserIntent.NavigateToSectionList)
+                }) {
+                    Text("Ok")
+                }
             }
         }
     }

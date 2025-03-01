@@ -14,6 +14,7 @@ import com.example.coursework.domain.usecase.CheckAuthorizationUseCase
 import com.example.coursework.domain.usecase.DeleteSectionUseCase
 import com.example.coursework.domain.usecase.DownloadSectionDetailsUseCase
 import com.example.coursework.domain.usecase.GetSectionListUseCase
+import com.example.coursework.domain.usecase.UpdateSectionUseCase
 import com.example.coursework.presentation.auth.Authorization
 import com.example.coursework.presentation.auth.mvi.AuthViewModel
 import com.example.coursework.presentation.sectionDetails.InformationAboutSportsSections
@@ -71,6 +72,9 @@ fun RootScreen() {
                             sportSectionListRepository = SportSectionListRepositoryImpl()
                         ),
                         arg.isAddingItem,
+                        UpdateSectionUseCase(
+                            sportSectionListRepository = SportSectionListRepositoryImpl()
+                        )
                     )
                 })
             )
@@ -86,7 +90,7 @@ data object AuthNavigation
 data class SectionsListNavigation(val isAdmin: Boolean)
 
 @Serializable
-data class SectionDetailsNavigation(val sectionId: Int, val isAdmin: Boolean, val isAddingItem: Boolean)
+data class SectionDetailsNavigation(val sectionId: Long, val isAdmin: Boolean, val isAddingItem: Boolean)
 
 inline fun <VM : ViewModel> viewModelFactory(crossinline f: () -> VM) =
     object : ViewModelProvider.Factory {

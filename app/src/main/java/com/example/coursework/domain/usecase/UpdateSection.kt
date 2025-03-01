@@ -3,16 +3,15 @@ package com.example.coursework.domain.usecase
 import com.example.coursework.domain.boundary.SportSectionListRepository
 import com.example.coursework.domain.entity.SportSection
 
-interface GetSectionList {
-
-    suspend operator fun invoke(): List<SportSection>
+interface UpdateSection {
+    suspend operator fun invoke(sportSection: SportSection)
 }
 
-class GetSectionListUseCase(
+class UpdateSectionUseCase(
     private val sportSectionListRepository: SportSectionListRepository
-) : GetSectionList {
+) : UpdateSection {
 
-    override suspend fun invoke() :List<SportSection> {
-        return sportSectionListRepository.getSportSection()
+    override suspend fun invoke(sportSection: SportSection) {
+        sportSectionListRepository.update(sportSection)
     }
 }

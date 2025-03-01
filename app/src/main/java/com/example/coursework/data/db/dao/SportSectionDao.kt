@@ -2,25 +2,23 @@ package com.example.coursework.data.db.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
+import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import androidx.room.Upsert
 import com.example.coursework.data.db.model.DbSportSection
 
 @Dao
 interface SportSectionDao {
 
     @Query("SELECT * FROM dbsportsection")
-    fun getAll(): List<DbSportSection>
-
-    @Query("SELECT * FROM dbsportsection WHERE id IN (:sportSectionId)")
-    fun getById(sportSectionId: Long): DbSportSection
+    suspend fun getAll(): List<DbSportSection>
 
     @Update
-    fun update(dbSection: DbSportSection)
+    suspend fun update(dbSection: DbSportSection)
 
-    @Upsert fun insert(vararg dbSection: DbSportSection)
+    @Insert
+    suspend fun insert(vararg dbSection: DbSportSection)
 
-    @Delete
-    fun delete(dbSection: DbSportSection)
+    @Query("DELETE FROM DbSportSection WHERE id = :sportSectionId")
+    suspend fun deleteById(sportSectionId: Long)
 }

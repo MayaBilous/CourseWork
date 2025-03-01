@@ -21,13 +21,13 @@ class SectionApp() : Application() {
                     DbLogin(id = null, userName = "user", password = "321", isAdmin = false),
                 )
             }
-//            if (db.SportSectionDao().getAll().isEmpty()){
-//                db.SportSectionDao().insert(
-//                    DbSportSection(id = null, sectionName = "Football", district = "Троєщина", address = "вулиця Миколи Лаврухіна, 4", workingDays = "Середа, Субота, Неділя", phoneNumber = "+380504723987"),
-//                    DbSportSection(id = null, sectionName = "Basketball", district = "Солом`янський", address = "проспект Любомира Гузара, 3", workingDays = "Понеділок, Середа, П`ятниця", phoneNumber = "+380504784639"),
-//                    DbSportSection(id = null, sectionName = "Hokey", district = "Святошинський", address = "вулиця Салютна, 2", workingDays = "Вівторок, Четвер, Субота", phoneNumber = "+380501144622"),
-//                )
-//            }
+            if (db.SportSectionDao().getAll().isEmpty()){
+                db.SportSectionDao().insert(
+                    DbSportSection(id = null, sectionName = "Футбол", district = "Троєщина", address = "вулиця Миколи Лаврухіна, 4", workingDays = "Середа, Субота, Неділя", phoneNumber = "+380504723987"),
+                    DbSportSection(id = null, sectionName = "Баскетбол", district = "Солом`янський", address = "проспект Любомира Гузара, 3", workingDays = "Понеділок, Середа, П`ятниця", phoneNumber = "+380504784639"),
+                    DbSportSection(id = null, sectionName = "Хокей", district = "Святошинський", address = "вулиця Салютна, 2", workingDays = "Вівторок, Четвер, Субота", phoneNumber = "+380501144622"),
+                )
+            }
         }
     }
 }

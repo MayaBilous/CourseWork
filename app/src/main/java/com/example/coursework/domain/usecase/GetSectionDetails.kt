@@ -4,16 +4,16 @@ import com.example.coursework.domain.boundary.SportSectionListRepository
 import com.example.coursework.domain.entity.SportSection
 
 
-interface DownloadSectionDetails {
+interface GetSectionDetails {
 
-    suspend operator fun invoke(sectionId: Int): SportSection
+    suspend operator fun invoke(sectionId: Long): SportSection
 }
 
 class DownloadSectionDetailsUseCase(
     private val sportSectionListRepository: SportSectionListRepository
-) : DownloadSectionDetails {
+) : GetSectionDetails {
 
-    override suspend fun invoke(sectionId: Int) : SportSection {
-        return sportSectionListRepository.getList().find { it.id == sectionId } ?: SportSection.default
+    override suspend fun invoke(sectionId: Long) : SportSection {
+        return sportSectionListRepository.getSportSection().find { it.id == sectionId } ?: SportSection.default
     }
 }
