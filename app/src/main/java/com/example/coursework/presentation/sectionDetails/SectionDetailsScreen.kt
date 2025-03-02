@@ -22,7 +22,6 @@ import com.example.coursework.presentation.root.SectionsListNavigation
 import com.example.coursework.presentation.sectionDetails.mvi.InformationAboutSportsSectionsViewModel
 import com.example.coursework.presentation.sectionDetails.mvi.InformationAboutSportsSectionsViewModel.SectionsInfoEvent
 import com.example.coursework.presentation.sectionDetails.mvi.InformationAboutSportsSectionsViewModel.SectionsInfoUserIntent
-import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListUserIntent.NavigateToAuth
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -58,11 +57,7 @@ fun InformationAboutSportsSections(
                 .fillMaxWidth()
         ) {
             TextField(
-                value = if (state.isAddingItem) {
-                    ""
-                } else {
-                    state.sportSection.sectionName
-                },
+                state.sportSection.sectionName,
                 onValueChange = { viewModel.process(SectionsInfoUserIntent.ChangeSectionName(it)) },
                 enabled = state.isAdmin,
                 label = { Text("name") }
@@ -70,33 +65,28 @@ fun InformationAboutSportsSections(
         }
 
         TextField(
-            value = if (state.isAddingItem) {
-                ""
-            } else {
-                state.sportSection.address
-            },
+            state.sportSection.district,
+            onValueChange = { viewModel.process(SectionsInfoUserIntent.ChangeDistrict(it)) },
+            enabled = state.isAdmin,
+            label = { Text("district") }
+        )
+
+        TextField(
+            state.sportSection.address,
             onValueChange = { viewModel.process(SectionsInfoUserIntent.ChangeAddress(it)) },
             enabled = state.isAdmin,
             label = { Text("address") }
         )
 
         TextField(
-            value = if (state.isAddingItem) {
-                ""
-            } else {
-                state.sportSection.workingDays
-            },
+            state.sportSection.workingDays,
             onValueChange = { viewModel.process(SectionsInfoUserIntent.ChangeWorkingDays(it)) },
             enabled = state.isAdmin,
             label = { Text("working days") }
         )
 
         TextField(
-            value = if (state.isAddingItem) {
-                ""
-            } else {
-                state.sportSection.phoneNumber
-            },
+            state.sportSection.phoneNumber,
             onValueChange = { viewModel.process(SectionsInfoUserIntent.ChangePhoneNumber(it)) },
             enabled = state.isAdmin,
             label = { Text("phone number") }
@@ -118,7 +108,13 @@ fun InformationAboutSportsSections(
                     }
                 }
                 Button(onClick = {
-                    viewModel.process(SectionsInfoUserIntent.UpdateSportSection(state.sportSection))
+                    if (state.isAdmin) {
+                        if (state.isAddingItem) {
+                            viewModel.process(SectionsInfoUserIntent.InsertSportSection(state.sportSection))
+                        } else {
+                            viewModel.process(SectionsInfoUserIntent.UpdateSportSection(state.sportSection))
+                        }
+                    }
                     viewModel.process(SectionsInfoUserIntent.NavigateToSectionList)
                 }) {
                     Text("Ok")

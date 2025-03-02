@@ -7,4 +7,5 @@ interface SportSectionListRepository {
     suspend fun getSportSection(): List<SportSection>
     suspend fun delete(sectionId: Long)
     suspend fun update(sportSection: SportSection)
+    suspend fun insert(sportSection: SportSection)
 }

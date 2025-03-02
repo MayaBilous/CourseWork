@@ -21,5 +21,9 @@ class SportSectionListRepositoryImpl : SportSectionListRepository {
     override suspend fun update(sportSection: SportSection) {
         sportSectionDao.update(mapper.domainToMap(sportSection))
     }
+
+    override suspend fun insert(sportSection: SportSection) {
+        sportSectionDao.insert(mapper.domainToMap(sportSection))
+    }
 }
 

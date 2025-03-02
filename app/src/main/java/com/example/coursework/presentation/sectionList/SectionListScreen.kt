@@ -93,7 +93,7 @@ fun SectionListScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
 
-                    Text(text = item.sectionName,
+                    Text(text = item.sectionName + " (" + item.district + ")",
                         modifier = Modifier
                             .clickable {
                                     viewModel.process(

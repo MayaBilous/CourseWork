@@ -14,6 +14,7 @@ import com.example.coursework.domain.usecase.CheckAuthorizationUseCase
 import com.example.coursework.domain.usecase.DeleteSectionUseCase
 import com.example.coursework.domain.usecase.DownloadSectionDetailsUseCase
 import com.example.coursework.domain.usecase.GetSectionListUseCase
+import com.example.coursework.domain.usecase.InsertSectionUseCase
 import com.example.coursework.domain.usecase.UpdateSectionUseCase
 import com.example.coursework.presentation.auth.Authorization
 import com.example.coursework.presentation.auth.mvi.AuthViewModel
@@ -74,7 +75,10 @@ fun RootScreen() {
                         arg.isAddingItem,
                         UpdateSectionUseCase(
                             sportSectionListRepository = SportSectionListRepositoryImpl()
-                        )
+                        ),
+                        InsertSectionUseCase(
+                            sportSectionListRepository = SportSectionListRepositoryImpl()
+                        ),
                     )
                 })
             )

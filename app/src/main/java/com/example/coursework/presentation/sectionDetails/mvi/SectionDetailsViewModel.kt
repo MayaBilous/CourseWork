@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.coursework.domain.entity.SportSection
 import com.example.coursework.domain.usecase.GetSectionDetails
+import com.example.coursework.domain.usecase.InsertSection
 import com.example.coursework.domain.usecase.UpdateSection
 import com.example.coursework.presentation.auth.mvi.AuthState
 import com.example.coursework.presentation.sectionDetails.mvi.InformationAboutSportsSectionsViewModel.SectionsInfoUserIntent.NavigateToSectionList
@@ -21,7 +22,8 @@ class InformationAboutSportsSectionsViewModel(
     val isAdmin: Boolean,
     private val getSectionDetails: GetSectionDetails,
     val isAddingItem: Boolean,
-    private val updateSection: UpdateSection
+    private val updateSection: UpdateSection,
+    private val insertSection: InsertSection,
 ) : ViewModel() {
 
     private var _state = MutableStateFlow(
@@ -51,14 +53,22 @@ class InformationAboutSportsSectionsViewModel(
                     is SectionsInfoUserIntent.ChangeSectionName -> changeSectionName(sectionName = intent.sectionName)
                     is SectionsInfoUserIntent.ChangeWorkingDays -> changeWorkingDays(workingDays = intent.workingDays)
                     is SectionsInfoUserIntent.UpdateSportSection -> updateSportSection(sportSection = intent.sportSection)
+                    is SectionsInfoUserIntent.InsertSportSection -> insertSportSection(sportSection = intent.sportSection)
+                    is SectionsInfoUserIntent.ChangeDistrict -> changeDistrict(district = intent.district)
                 }
             }
         }
-        viewModelScope.launch { loadSportSectionDetails() }
+        if (!isAddingItem){
+            viewModelScope.launch { loadSportSectionDetails() }
+        }
     }
 
     private suspend fun updateSportSection(sportSection: SportSection) {
         updateSection.invoke(sportSection)
+    }
+
+    private suspend fun insertSportSection(sportSection: SportSection) {
+        insertSection.invoke(sportSection)
     }
 
     private suspend fun loadSportSectionDetails() {
@@ -70,6 +80,14 @@ class InformationAboutSportsSectionsViewModel(
         _state.emit(
             state.value.copy(
                 sportSection = _state.value.sportSection.copy(sectionName = sectionName)
+            )
+        )
+    }
+
+    private suspend fun changeDistrict(district: String) {
+        _state.emit(
+            state.value.copy(
+                sportSection = _state.value.sportSection.copy(district = district)
             )
         )
     }
@@ -121,7 +139,9 @@ class InformationAboutSportsSectionsViewModel(
         data class ChangeAddress(val address: String) : SectionsInfoUserIntent
         data class ChangeWorkingDays(val workingDays: String) : SectionsInfoUserIntent
         data class ChangePhoneNumber(val phoneNumber: String) : SectionsInfoUserIntent
+        data class ChangeDistrict(val district: String): SectionsInfoUserIntent
         data class UpdateSportSection(val sportSection: SportSection): SectionsInfoUserIntent
+        data class InsertSportSection(val sportSection: SportSection): SectionsInfoUserIntent
         data object NavigateToSectionList : SectionsInfoUserIntent
     }
 
