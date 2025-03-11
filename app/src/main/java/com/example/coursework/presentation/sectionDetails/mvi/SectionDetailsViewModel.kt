@@ -3,11 +3,12 @@ package com.example.coursework.presentation.sectionDetails.mvi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.coursework.domain.entity.SportSection
+import com.example.coursework.domain.usecase.CheckSectionDetails
 import com.example.coursework.domain.usecase.GetSectionDetails
 import com.example.coursework.domain.usecase.InsertSection
 import com.example.coursework.domain.usecase.UpdateSection
-import com.example.coursework.presentation.auth.mvi.AuthState
-import com.example.coursework.presentation.sectionDetails.mvi.InformationAboutSportsSectionsViewModel.SectionsInfoUserIntent.NavigateToSectionList
+import com.example.coursework.presentation.auth.mvi.AuthEvent
+import com.example.coursework.presentation.sectionDetails.mvi.InformationAboutSportsSectionsViewModel.SectionDetailsUserIntent.NavigateToSectionList
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -24,6 +25,7 @@ class InformationAboutSportsSectionsViewModel(
     val isAddingItem: Boolean,
     private val updateSection: UpdateSection,
     private val insertSection: InsertSection,
+    private val checkSectionDetails: CheckSectionDetails
 ) : ViewModel() {
 
     private var _state = MutableStateFlow(
@@ -37,10 +39,10 @@ class InformationAboutSportsSectionsViewModel(
     val state: StateFlow<SectionsDetailsListState>
         get() = _state.asStateFlow()
 
-    private val _userIntent = MutableSharedFlow<SectionsInfoUserIntent>()
+    private val _userIntent = MutableSharedFlow<SectionDetailsUserIntent>()
 
-    private val _event = MutableSharedFlow<SectionsInfoEvent>()
-    val event: SharedFlow<SectionsInfoEvent>
+    private val _event = MutableSharedFlow<SectionDetailsEvent>()
+    val event: SharedFlow<SectionDetailsEvent>
         get() = _event.asSharedFlow()
 
     init {
@@ -48,27 +50,46 @@ class InformationAboutSportsSectionsViewModel(
             _userIntent.collectLatest { intent ->
                 when (intent) {
                     is NavigateToSectionList -> navigateToSectionList()
-                    is SectionsInfoUserIntent.ChangeAddress -> changeAddress(address = intent.address)
-                    is SectionsInfoUserIntent.ChangePhoneNumber -> changePhoneNumber(phoneNumber = intent.phoneNumber)
-                    is SectionsInfoUserIntent.ChangeSectionName -> changeSectionName(sectionName = intent.sectionName)
-                    is SectionsInfoUserIntent.ChangeWorkingDays -> changeWorkingDays(workingDays = intent.workingDays)
-                    is SectionsInfoUserIntent.UpdateSportSection -> updateSportSection(sportSection = intent.sportSection)
-                    is SectionsInfoUserIntent.InsertSportSection -> insertSportSection(sportSection = intent.sportSection)
-                    is SectionsInfoUserIntent.ChangeDistrict -> changeDistrict(district = intent.district)
+                    is SectionDetailsUserIntent.ChangeAddress -> changeAddress(address = intent.address)
+                    is SectionDetailsUserIntent.ChangePhoneNumber -> changePhoneNumber(phoneNumber = intent.phoneNumber)
+                    is SectionDetailsUserIntent.ChangeSectionName -> changeSectionName(sectionName = intent.sectionName)
+                    is SectionDetailsUserIntent.ChangeWorkingDays -> changeWorkingDays(workingDays = intent.workingDays)
+                    is SectionDetailsUserIntent.UpdateSportSection -> updateSportSection(
+                        sportSection = intent.sportSection
+                    )
+
+                    is SectionDetailsUserIntent.InsertSportSection -> insertSportSection(
+                        sportSection = intent.sportSection
+                    )
+
+                    is SectionDetailsUserIntent.ChangeDistrict -> changeDistrict(district = intent.district)
                 }
             }
         }
-        if (!isAddingItem){
+        if (!isAddingItem) {
             viewModelScope.launch { loadSportSectionDetails() }
         }
     }
 
     private suspend fun updateSportSection(sportSection: SportSection) {
-        updateSection.invoke(sportSection)
+        val result = checkSectionDetails(sportSection)
+        if (result) {
+            updateSection.invoke(sportSection)
+            _event.emit(SectionDetailsEvent.Navigate(isAdmin = isAdmin))
+        } else {
+            _event.emit(SectionDetailsEvent.EmptyData)
+        }
     }
 
     private suspend fun insertSportSection(sportSection: SportSection) {
-        insertSection.invoke(sportSection)
+        val result = checkSectionDetails(sportSection)
+        if (result) {
+            insertSection.invoke(sportSection)
+            _event.emit(SectionDetailsEvent.Navigate(isAdmin = isAdmin))
+        } else {
+            _event.emit(SectionDetailsEvent.EmptyData)
+        }
+
     }
 
     private suspend fun loadSportSectionDetails() {
@@ -116,14 +137,14 @@ class InformationAboutSportsSectionsViewModel(
         )
     }
 
-    fun process(userIntent: SectionsInfoUserIntent) {
+    fun process(userIntent: SectionDetailsUserIntent) {
         viewModelScope.launch {
             _userIntent.emit(userIntent)
         }
     }
 
     private suspend fun navigateToSectionList() {
-        _event.emit(SectionsInfoEvent.Navigate(isAdmin = state.value.isAdmin))
+        _event.emit(SectionDetailsEvent.Navigate(isAdmin = state.value.isAdmin))
     }
 
     data class SectionsDetailsListState(
@@ -134,19 +155,20 @@ class InformationAboutSportsSectionsViewModel(
     ) {
     }
 
-    sealed interface SectionsInfoUserIntent {
-        data class ChangeSectionName(val sectionName: String) : SectionsInfoUserIntent
-        data class ChangeAddress(val address: String) : SectionsInfoUserIntent
-        data class ChangeWorkingDays(val workingDays: String) : SectionsInfoUserIntent
-        data class ChangePhoneNumber(val phoneNumber: String) : SectionsInfoUserIntent
-        data class ChangeDistrict(val district: String): SectionsInfoUserIntent
-        data class UpdateSportSection(val sportSection: SportSection): SectionsInfoUserIntent
-        data class InsertSportSection(val sportSection: SportSection): SectionsInfoUserIntent
-        data object NavigateToSectionList : SectionsInfoUserIntent
+    sealed interface SectionDetailsUserIntent {
+        data class ChangeSectionName(val sectionName: String) : SectionDetailsUserIntent
+        data class ChangeAddress(val address: String) : SectionDetailsUserIntent
+        data class ChangeWorkingDays(val workingDays: String) : SectionDetailsUserIntent
+        data class ChangePhoneNumber(val phoneNumber: String) : SectionDetailsUserIntent
+        data class ChangeDistrict(val district: String) : SectionDetailsUserIntent
+        data class UpdateSportSection(val sportSection: SportSection) : SectionDetailsUserIntent
+        data class InsertSportSection(val sportSection: SportSection) : SectionDetailsUserIntent
+        data object NavigateToSectionList : SectionDetailsUserIntent
     }
 
-    sealed interface SectionsInfoEvent {
-        data class Navigate(val isAdmin: Boolean) : SectionsInfoEvent
+    sealed interface SectionDetailsEvent {
+        data class Navigate(val isAdmin: Boolean) : SectionDetailsEvent
+        data object EmptyData : SectionDetailsEvent
     }
 
 }

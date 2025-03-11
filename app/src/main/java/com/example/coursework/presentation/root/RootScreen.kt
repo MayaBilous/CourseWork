@@ -11,6 +11,8 @@ import androidx.navigation.toRoute
 import com.example.coursework.data.repository.AuthorizationRepositoryImpl
 import com.example.coursework.data.repository.SportSectionListRepositoryImpl
 import com.example.coursework.domain.usecase.CheckAuthorizationUseCase
+import com.example.coursework.domain.usecase.CheckSectionDetails
+import com.example.coursework.domain.usecase.CheckSectionDetailsUseCase
 import com.example.coursework.domain.usecase.DeleteSectionUseCase
 import com.example.coursework.domain.usecase.DownloadSectionDetailsUseCase
 import com.example.coursework.domain.usecase.GetSectionListUseCase
@@ -79,6 +81,7 @@ fun RootScreen() {
                         InsertSectionUseCase(
                             sportSectionListRepository = SportSectionListRepositoryImpl()
                         ),
+                        CheckSectionDetailsUseCase()
                     )
                 })
             )
