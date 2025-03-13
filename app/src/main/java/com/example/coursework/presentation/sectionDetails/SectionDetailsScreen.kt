@@ -31,16 +31,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.coursework.presentation.ShowDialog
 import com.example.coursework.presentation.root.SectionsListNavigation
-import com.example.coursework.presentation.sectionDetails.mvi.InformationAboutSportsSectionsViewModel
-import com.example.coursework.presentation.sectionDetails.mvi.InformationAboutSportsSectionsViewModel.SectionDetailsEvent
-import com.example.coursework.presentation.sectionDetails.mvi.InformationAboutSportsSectionsViewModel.SectionDetailsUserIntent
+import com.example.coursework.presentation.sectionDetails.mvi.DetailsSportsSectionsViewModel
+import com.example.coursework.presentation.sectionDetails.mvi.DetailsSportsSectionsViewModel.SectionDetailsEvent
+import com.example.coursework.presentation.sectionDetails.mvi.DetailsSportsSectionsViewModel.SectionDetailsUserIntent
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InformationAboutSportsSections(
     navController: NavController,
-    viewModel: InformationAboutSportsSectionsViewModel
+    viewModel: DetailsSportsSectionsViewModel
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var showDialog by remember { mutableStateOf(false) }

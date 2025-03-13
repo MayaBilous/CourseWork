@@ -7,8 +7,7 @@ import com.example.coursework.domain.usecase.CheckSectionDetails
 import com.example.coursework.domain.usecase.GetSectionDetails
 import com.example.coursework.domain.usecase.InsertSection
 import com.example.coursework.domain.usecase.UpdateSection
-import com.example.coursework.presentation.auth.mvi.AuthEvent
-import com.example.coursework.presentation.sectionDetails.mvi.InformationAboutSportsSectionsViewModel.SectionDetailsUserIntent.NavigateToSectionList
+import com.example.coursework.presentation.sectionDetails.mvi.DetailsSportsSectionsViewModel.SectionDetailsUserIntent.NavigateToSectionList
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -18,7 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class InformationAboutSportsSectionsViewModel(
+class DetailsSportsSectionsViewModel(
     val sectionId: Long = 0,
     val isAdmin: Boolean,
     private val getSectionDetails: GetSectionDetails,

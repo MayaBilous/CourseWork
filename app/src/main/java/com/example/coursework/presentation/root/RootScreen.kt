@@ -11,7 +11,6 @@ import androidx.navigation.toRoute
 import com.example.coursework.data.repository.AuthorizationRepositoryImpl
 import com.example.coursework.data.repository.SportSectionListRepositoryImpl
 import com.example.coursework.domain.usecase.CheckAuthorizationUseCase
-import com.example.coursework.domain.usecase.CheckSectionDetails
 import com.example.coursework.domain.usecase.CheckSectionDetailsUseCase
 import com.example.coursework.domain.usecase.DeleteSectionUseCase
 import com.example.coursework.domain.usecase.DownloadSectionDetailsUseCase
@@ -21,7 +20,7 @@ import com.example.coursework.domain.usecase.UpdateSectionUseCase
 import com.example.coursework.presentation.auth.Authorization
 import com.example.coursework.presentation.auth.mvi.AuthViewModel
 import com.example.coursework.presentation.sectionDetails.InformationAboutSportsSections
-import com.example.coursework.presentation.sectionDetails.mvi.InformationAboutSportsSectionsViewModel
+import com.example.coursework.presentation.sectionDetails.mvi.DetailsSportsSectionsViewModel
 import com.example.coursework.presentation.sectionList.SectionListScreen
 import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel
 import kotlinx.serialization.Serializable
@@ -67,7 +66,7 @@ fun RootScreen() {
             InformationAboutSportsSections(
                 navController = navController,
                 viewModel = viewModel(factory = viewModelFactory {
-                    InformationAboutSportsSectionsViewModel(
+                    DetailsSportsSectionsViewModel(
                         arg.sectionId,
                         arg.isAdmin,
 
