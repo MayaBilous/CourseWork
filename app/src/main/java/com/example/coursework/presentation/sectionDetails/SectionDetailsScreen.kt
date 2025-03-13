@@ -8,8 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -18,7 +21,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.coursework.presentation.ShowDialog
@@ -28,6 +36,7 @@ import com.example.coursework.presentation.sectionDetails.mvi.InformationAboutSp
 import com.example.coursework.presentation.sectionDetails.mvi.InformationAboutSportsSectionsViewModel.SectionDetailsUserIntent
 import kotlinx.coroutines.flow.collectLatest
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InformationAboutSportsSections(
     navController: NavController,
@@ -75,6 +84,16 @@ fun InformationAboutSportsSections(
             TextField(
                 state.sportSection.sectionName,
                 onValueChange = { viewModel.process(SectionDetailsUserIntent.ChangeSectionName(it)) },
+                colors = TextFieldDefaults.textFieldColors(
+                    containerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    disabledTextColor = Color.Black,
+                ),
+                textStyle = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                ),
                 enabled = state.isAdmin,
                 label = { Text("name") }
             )
@@ -83,6 +102,15 @@ fun InformationAboutSportsSections(
         TextField(
             state.sportSection.district,
             onValueChange = { viewModel.process(SectionDetailsUserIntent.ChangeDistrict(it)) },
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                disabledTextColor = Color.Black,
+            ),
+            textStyle = TextStyle(
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold
+            ),
             enabled = state.isAdmin,
             label = { Text("district") }
         )
@@ -90,6 +118,15 @@ fun InformationAboutSportsSections(
         TextField(
             state.sportSection.address,
             onValueChange = { viewModel.process(SectionDetailsUserIntent.ChangeAddress(it)) },
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                disabledTextColor = Color.Black,
+            ),
+            textStyle = TextStyle(
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold
+            ),
             enabled = state.isAdmin,
             label = { Text("address") }
         )
@@ -97,6 +134,15 @@ fun InformationAboutSportsSections(
         TextField(
             state.sportSection.workingDays,
             onValueChange = { viewModel.process(SectionDetailsUserIntent.ChangeWorkingDays(it)) },
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                disabledTextColor = Color.Black,
+            ),
+            textStyle = TextStyle(
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold
+            ),
             enabled = state.isAdmin,
             label = { Text("working days") }
         )
@@ -104,6 +150,15 @@ fun InformationAboutSportsSections(
         TextField(
             state.sportSection.phoneNumber,
             onValueChange = { viewModel.process(SectionDetailsUserIntent.ChangePhoneNumber(it)) },
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                disabledTextColor = Color.Black,
+            ),
+            textStyle = TextStyle(
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold
+            ),
             enabled = state.isAdmin,
             label = { Text("phone number") }
         )
@@ -119,7 +174,10 @@ fun InformationAboutSportsSections(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 if (state.isAdmin) {
-                    Button(onClick = { viewModel.process(SectionDetailsUserIntent.NavigateToSectionList) }) {
+                    Button(onClick = { viewModel.process(SectionDetailsUserIntent.NavigateToSectionList) },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF4080f0)
+                        )) {
                         Text("Cancel")
                     }
                 }
@@ -130,8 +188,13 @@ fun InformationAboutSportsSections(
                         } else {
                             viewModel.process(SectionDetailsUserIntent.UpdateSportSection(state.sportSection))
                         }
+                    }else{
+                        viewModel.process(SectionDetailsUserIntent.NavigateToSectionList)
                     }
-                }) {
+                },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF4080f0)
+                    )) {
                     Text("Ok")
                 }
             }
