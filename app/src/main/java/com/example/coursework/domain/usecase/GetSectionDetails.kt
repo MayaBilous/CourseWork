@@ -9,7 +9,7 @@ interface GetSectionDetails {
     suspend operator fun invoke(sectionId: Long): SportSection
 }
 
-class DownloadSectionDetailsUseCase(
+class GetSectionDetailsUseCase(
     private val sportSectionListRepository: SportSectionListRepository
 ) : GetSectionDetails {
 

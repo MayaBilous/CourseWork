@@ -13,13 +13,13 @@ import com.example.coursework.data.repository.SportSectionListRepositoryImpl
 import com.example.coursework.domain.usecase.CheckAuthorizationUseCase
 import com.example.coursework.domain.usecase.CheckSectionDetailsUseCase
 import com.example.coursework.domain.usecase.DeleteSectionUseCase
-import com.example.coursework.domain.usecase.DownloadSectionDetailsUseCase
+import com.example.coursework.domain.usecase.GetSectionDetailsUseCase
 import com.example.coursework.domain.usecase.GetSectionListUseCase
 import com.example.coursework.domain.usecase.InsertSectionUseCase
 import com.example.coursework.domain.usecase.UpdateSectionUseCase
 import com.example.coursework.presentation.auth.Authorization
 import com.example.coursework.presentation.auth.mvi.AuthViewModel
-import com.example.coursework.presentation.sectionDetails.InformationAboutSportsSections
+import com.example.coursework.presentation.sectionDetails.SectionDetailsScreen
 import com.example.coursework.presentation.sectionDetails.mvi.DetailsSportsSectionsViewModel
 import com.example.coursework.presentation.sectionList.SectionListScreen
 import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel
@@ -63,14 +63,14 @@ fun RootScreen() {
 
         composable<SectionDetailsNavigation> {
             val arg = it.toRoute<SectionDetailsNavigation>()
-            InformationAboutSportsSections(
+            SectionDetailsScreen(
                 navController = navController,
                 viewModel = viewModel(factory = viewModelFactory {
                     DetailsSportsSectionsViewModel(
                         arg.sectionId,
                         arg.isAdmin,
 
-                        DownloadSectionDetailsUseCase(
+                        GetSectionDetailsUseCase(
                             sportSectionListRepository = SportSectionListRepositoryImpl()
                         ),
                         arg.isAddingItem,

@@ -38,7 +38,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InformationAboutSportsSections(
+fun SectionDetailsScreen(
     navController: NavController,
     viewModel: DetailsSportsSectionsViewModel
 ) {
