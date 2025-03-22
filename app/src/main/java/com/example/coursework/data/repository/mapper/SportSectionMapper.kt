@@ -8,10 +8,10 @@ class SportSectionMapper {
         return SportSection(
             id = dbSportSection.id,
             sectionName = dbSportSection.sectionName,
-            district = dbSportSection.district,
             address = dbSportSection.address,
             workingDays = dbSportSection.workingDays,
             phoneNumber = dbSportSection.phoneNumber,
+            price = dbSportSection.price,
         )
     }
 
@@ -19,10 +19,10 @@ class SportSectionMapper {
         return DbSportSection(
             id = sportSection.id,
             sectionName = sportSection.sectionName,
-            district = sportSection.district,
             address = sportSection.address,
             workingDays = sportSection.workingDays,
             phoneNumber = sportSection.phoneNumber,
+            price = sportSection.price,
         )
     }
 }

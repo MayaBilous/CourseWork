@@ -100,22 +100,6 @@ fun SectionDetailsScreen(
         }
 
         TextField(
-            state.sportSection.district,
-            onValueChange = { viewModel.process(SectionDetailsUserIntent.ChangeDistrict(it)) },
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                disabledTextColor = Color.Black,
-            ),
-            textStyle = TextStyle(
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold
-            ),
-            enabled = state.isAdmin,
-            label = { Text("district") }
-        )
-
-        TextField(
             state.sportSection.address,
             onValueChange = { viewModel.process(SectionDetailsUserIntent.ChangeAddress(it)) },
             colors = TextFieldDefaults.textFieldColors(
@@ -145,6 +129,23 @@ fun SectionDetailsScreen(
             ),
             enabled = state.isAdmin,
             label = { Text("working days") }
+        )
+
+
+        TextField(
+            state.sportSection.price.toString(),
+            onValueChange = { viewModel.process(SectionDetailsUserIntent.ChangePrice(it.toInt())) },
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                disabledTextColor = Color.Black,
+            ),
+            textStyle = TextStyle(
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold
+            ),
+            enabled = state.isAdmin,
+            label = { Text("district") }
         )
 
         TextField(

@@ -23,9 +23,12 @@ class SectionApp() : Application() {
             }
             if (db.SportSectionDao().getAll().isEmpty()){
                 db.SportSectionDao().insert(
-                    DbSportSection(id = null, sectionName = "Футбол", district = "Троєщина", address = "вулиця Миколи Лаврухіна, 4", workingDays = "Середа, Субота, Неділя", phoneNumber = "+380504723987"),
-                    DbSportSection(id = null, sectionName = "Баскетбол", district = "Солом`янський", address = "проспект Любомира Гузара, 3", workingDays = "Понеділок, Середа, П`ятниця", phoneNumber = "+380504784639"),
-                    DbSportSection(id = null, sectionName = "Хокей", district = "Святошинський", address = "вулиця Салютна, 2", workingDays = "Вівторок, Четвер, Субота", phoneNumber = "+380501144622"),
+                    DbSportSection(id = null, sectionName = "Футбол", address = "вулиця Миколи Лаврухіна, 4", workingDays = "Середа, Субота, Неділя", phoneNumber = "+380504723987", price = 300),
+                    DbSportSection(id = null, sectionName = "Футбол", address = "вулиця Миколи, 10", workingDays = "Середа, Неділя", phoneNumber = "+380505386487", price = 250),
+                    DbSportSection(id = null, sectionName = "Баскетбол", address = "проспект Любомира, 10", workingDays = "Понеділок, Середа, П`ятниця", phoneNumber = "+380509417639", price = 500),
+                    DbSportSection(id = null, sectionName = "Баскетбол", address = "проспект Любомира Гузара, 3", workingDays = "Понеділок, Середа", phoneNumber = "+380091647639", price = 300),
+                    DbSportSection(id = null, sectionName = "Баскетбол", address = "проспект Перемоги, 7", workingDays = "Середа, П`ятниця", phoneNumber = "+380504946239", price = 450),
+                    DbSportSection(id = null, sectionName = "Хокей",  address = "вулиця Салютна, 2", workingDays = "Вівторок, Четвер, Субота", phoneNumber = "+380501144622", price = 400),
                 )
             }
         }

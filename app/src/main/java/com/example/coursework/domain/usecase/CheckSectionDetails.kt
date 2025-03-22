@@ -12,7 +12,7 @@ class CheckSectionDetailsUseCase(
 
     override suspend fun invoke(sportSection: SportSection): Boolean {
         if (sportSection.sectionName.isEmpty() ||
-            sportSection.district.isEmpty() ||
+            sportSection.price > 0 ||
             sportSection.address.isEmpty() ||
             sportSection.workingDays.isEmpty()||
             sportSection.phoneNumber.isEmpty()

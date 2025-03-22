@@ -53,15 +53,9 @@ class DetailsSportsSectionsViewModel(
                     is SectionDetailsUserIntent.ChangePhoneNumber -> changePhoneNumber(phoneNumber = intent.phoneNumber)
                     is SectionDetailsUserIntent.ChangeSectionName -> changeSectionName(sectionName = intent.sectionName)
                     is SectionDetailsUserIntent.ChangeWorkingDays -> changeWorkingDays(workingDays = intent.workingDays)
-                    is SectionDetailsUserIntent.UpdateSportSection -> updateSportSection(
-                        sportSection = intent.sportSection
-                    )
-
-                    is SectionDetailsUserIntent.InsertSportSection -> insertSportSection(
-                        sportSection = intent.sportSection
-                    )
-
-                    is SectionDetailsUserIntent.ChangeDistrict -> changeDistrict(district = intent.district)
+                    is SectionDetailsUserIntent.UpdateSportSection -> updateSportSection(sportSection = intent.sportSection)
+                    is SectionDetailsUserIntent.InsertSportSection -> insertSportSection(sportSection = intent.sportSection)
+                    is SectionDetailsUserIntent.ChangePrice -> changePrice(price = intent.price)
                 }
             }
         }
@@ -104,10 +98,10 @@ class DetailsSportsSectionsViewModel(
         )
     }
 
-    private suspend fun changeDistrict(district: String) {
+    private suspend fun changePrice(price: Int) {
         _state.emit(
             state.value.copy(
-                sportSection = _state.value.sportSection.copy(district = district)
+                sportSection = _state.value.sportSection.copy(price = price)
             )
         )
     }
@@ -159,7 +153,7 @@ class DetailsSportsSectionsViewModel(
         data class ChangeAddress(val address: String) : SectionDetailsUserIntent
         data class ChangeWorkingDays(val workingDays: String) : SectionDetailsUserIntent
         data class ChangePhoneNumber(val phoneNumber: String) : SectionDetailsUserIntent
-        data class ChangeDistrict(val district: String) : SectionDetailsUserIntent
+        data class ChangePrice(val price: Int) : SectionDetailsUserIntent
         data class UpdateSportSection(val sportSection: SportSection) : SectionDetailsUserIntent
         data class InsertSportSection(val sportSection: SportSection) : SectionDetailsUserIntent
         data object NavigateToSectionList : SectionDetailsUserIntent
