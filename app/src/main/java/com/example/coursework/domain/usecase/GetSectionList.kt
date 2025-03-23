@@ -13,6 +13,6 @@ class GetSectionListUseCase(
 ) : GetSectionList {
 
     override suspend fun invoke() :List<SportSection> {
-        return sportSectionListRepository.getSportSection()
+        return sportSectionListRepository.getSportSections()
     }
 }

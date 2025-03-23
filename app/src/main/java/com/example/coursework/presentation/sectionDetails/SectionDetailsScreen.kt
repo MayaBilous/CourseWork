@@ -100,7 +100,7 @@ fun SectionDetailsScreen(
         }
 
         TextField(
-            state.sportSection.address,
+            state.sectionDetails.address,
             onValueChange = { viewModel.process(SectionDetailsUserIntent.ChangeAddress(it)) },
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.Transparent,
@@ -116,7 +116,7 @@ fun SectionDetailsScreen(
         )
 
         TextField(
-            state.sportSection.workingDays,
+            state.sectionDetails.workingDays,
             onValueChange = { viewModel.process(SectionDetailsUserIntent.ChangeWorkingDays(it)) },
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.Transparent,
@@ -133,7 +133,7 @@ fun SectionDetailsScreen(
 
 
         TextField(
-            state.sportSection.price.toString(),
+            state.sectionDetails.price.toString(),
             onValueChange = { viewModel.process(SectionDetailsUserIntent.ChangePrice(it.toInt())) },
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.Transparent,
@@ -145,11 +145,11 @@ fun SectionDetailsScreen(
                 fontWeight = FontWeight.Bold
             ),
             enabled = state.isAdmin,
-            label = { Text("district") }
+            label = { Text("price") }
         )
 
         TextField(
-            state.sportSection.phoneNumber,
+            state.sectionDetails.phoneNumber,
             onValueChange = { viewModel.process(SectionDetailsUserIntent.ChangePhoneNumber(it)) },
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.Transparent,
@@ -184,11 +184,7 @@ fun SectionDetailsScreen(
                 }
                 Button(onClick = {
                     if (state.isAdmin) {
-                        if (state.isAddingItem) {
-                            viewModel.process(SectionDetailsUserIntent.InsertSportSection(state.sportSection))
-                        } else {
                             viewModel.process(SectionDetailsUserIntent.UpdateSportSection(state.sportSection))
-                        }
                     }else{
                         viewModel.process(SectionDetailsUserIntent.NavigateToSectionList)
                     }
@@ -201,5 +197,4 @@ fun SectionDetailsScreen(
             }
         }
     }
-
 }

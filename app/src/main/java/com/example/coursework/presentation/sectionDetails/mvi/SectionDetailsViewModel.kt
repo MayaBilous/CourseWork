@@ -2,11 +2,11 @@ package com.example.coursework.presentation.sectionDetails.mvi
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.coursework.domain.entity.SectionDetails
 import com.example.coursework.domain.entity.SportSection
 import com.example.coursework.domain.usecase.CheckSectionDetails
 import com.example.coursework.domain.usecase.GetSectionDetails
-import com.example.coursework.domain.usecase.InsertSection
-import com.example.coursework.domain.usecase.UpdateSection
+import com.example.coursework.domain.usecase.UpsertSection
 import com.example.coursework.presentation.sectionDetails.mvi.DetailsSportsSectionsViewModel.SectionDetailsUserIntent.NavigateToSectionList
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,9 +22,8 @@ class DetailsSportsSectionsViewModel(
     val isAdmin: Boolean,
     private val getSectionDetails: GetSectionDetails,
     val isAddingItem: Boolean,
-    private val updateSection: UpdateSection,
-    private val insertSection: InsertSection,
-    private val checkSectionDetails: CheckSectionDetails
+    val checkSectionDetails: CheckSectionDetails,
+    private val upsertSection: UpsertSection,
 ) : ViewModel() {
 
     private var _state = MutableStateFlow(
@@ -32,7 +31,8 @@ class DetailsSportsSectionsViewModel(
             sectionId = sectionId,
             isAdmin = isAdmin,
             isAddingItem = isAddingItem,
-            sportSection = SportSection.default
+            sportSection = SportSection.default,
+            sectionDetails = SectionDetails.default,
         )
     )
     val state: StateFlow<SectionsDetailsListState>
@@ -53,9 +53,8 @@ class DetailsSportsSectionsViewModel(
                     is SectionDetailsUserIntent.ChangePhoneNumber -> changePhoneNumber(phoneNumber = intent.phoneNumber)
                     is SectionDetailsUserIntent.ChangeSectionName -> changeSectionName(sectionName = intent.sectionName)
                     is SectionDetailsUserIntent.ChangeWorkingDays -> changeWorkingDays(workingDays = intent.workingDays)
-                    is SectionDetailsUserIntent.UpdateSportSection -> updateSportSection(sportSection = intent.sportSection)
-                    is SectionDetailsUserIntent.InsertSportSection -> insertSportSection(sportSection = intent.sportSection)
                     is SectionDetailsUserIntent.ChangePrice -> changePrice(price = intent.price)
+                    is SectionDetailsUserIntent.UpdateSportSection -> updateSportSection(intent.sportSection.copy(sectionDetails = listOf(state.value.sectionDetails)))
                 }
             }
         }
@@ -65,29 +64,20 @@ class DetailsSportsSectionsViewModel(
     }
 
     private suspend fun updateSportSection(sportSection: SportSection) {
+
         val result = checkSectionDetails(sportSection)
         if (result) {
-            updateSection.invoke(sportSection)
+            upsertSection(sportSection)
             _event.emit(SectionDetailsEvent.Navigate(isAdmin = isAdmin))
         } else {
             _event.emit(SectionDetailsEvent.EmptyData)
         }
-    }
-
-    private suspend fun insertSportSection(sportSection: SportSection) {
-        val result = checkSectionDetails(sportSection)
-        if (result) {
-            insertSection.invoke(sportSection)
-            _event.emit(SectionDetailsEvent.Navigate(isAdmin = isAdmin))
-        } else {
-            _event.emit(SectionDetailsEvent.EmptyData)
-        }
-
     }
 
     private suspend fun loadSportSectionDetails() {
         val sectionDetails = getSectionDetails.invoke(sectionId)
         _state.emit(state.value.copy(sportSection = sectionDetails))
+        _state.emit(state.value.copy(sectionDetails = sectionDetails.sectionDetails.find { it.sectionId == sectionId }!!))
     }
 
     private suspend fun changeSectionName(sectionName: String) {
@@ -101,7 +91,7 @@ class DetailsSportsSectionsViewModel(
     private suspend fun changePrice(price: Int) {
         _state.emit(
             state.value.copy(
-                sportSection = _state.value.sportSection.copy(price = price)
+                sectionDetails = _state.value.sectionDetails.copy(price = price)
             )
         )
     }
@@ -109,7 +99,7 @@ class DetailsSportsSectionsViewModel(
     private suspend fun changeAddress(address: String) {
         _state.emit(
             state.value.copy(
-                sportSection = _state.value.sportSection.copy(address = address)
+                sectionDetails = _state.value.sectionDetails.copy(address = address)
             )
         )
     }
@@ -117,7 +107,7 @@ class DetailsSportsSectionsViewModel(
     private suspend fun changePhoneNumber(phoneNumber: String) {
         _state.emit(
             state.value.copy(
-                sportSection = _state.value.sportSection.copy(phoneNumber = phoneNumber)
+                sectionDetails = _state.value.sectionDetails.copy(phoneNumber = phoneNumber)
             )
         )
     }
@@ -125,7 +115,7 @@ class DetailsSportsSectionsViewModel(
     private suspend fun changeWorkingDays(workingDays: String) {
         _state.emit(
             state.value.copy(
-                sportSection = _state.value.sportSection.copy(workingDays = workingDays)
+                sectionDetails = _state.value.sectionDetails.copy(workingDays = workingDays)
             )
         )
     }
@@ -144,7 +134,8 @@ class DetailsSportsSectionsViewModel(
         val sectionId: Long,
         val isAdmin: Boolean,
         val isAddingItem: Boolean,
-        val sportSection: SportSection
+        val sportSection: SportSection,
+        val sectionDetails: SectionDetails,
     ) {
     }
 
@@ -155,7 +146,6 @@ class DetailsSportsSectionsViewModel(
         data class ChangePhoneNumber(val phoneNumber: String) : SectionDetailsUserIntent
         data class ChangePrice(val price: Int) : SectionDetailsUserIntent
         data class UpdateSportSection(val sportSection: SportSection) : SectionDetailsUserIntent
-        data class InsertSportSection(val sportSection: SportSection) : SectionDetailsUserIntent
         data object NavigateToSectionList : SectionDetailsUserIntent
     }
 

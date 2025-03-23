@@ -1,0 +1,22 @@
+package com.example.coursework.domain.entity
+
+data class SectionDetails(
+    val detailsId: Long?,
+    val sectionId: Long?,
+    val address: String,
+    val workingDays: String,
+    val phoneNumber: String,
+    val price: Int,
+) {
+
+    companion object {
+        val default = SectionDetails(
+            detailsId = 0,
+            address = "",
+            workingDays = "",
+            phoneNumber = "",
+            price = 0,
+            sectionId = 0,
+        )
+    }
+}

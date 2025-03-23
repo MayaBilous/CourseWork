@@ -6,14 +6,14 @@ import com.example.coursework.domain.entity.SportSection
 
 interface GetSectionDetails {
 
-    suspend operator fun invoke(sectionId: Long): SportSection
+    suspend operator fun invoke(sectionDetailsId: Long): SportSection
 }
 
 class GetSectionDetailsUseCase(
     private val sportSectionListRepository: SportSectionListRepository
 ) : GetSectionDetails {
 
-    override suspend fun invoke(sectionId: Long) : SportSection {
-        return sportSectionListRepository.getSportSection().find { it.id == sectionId } ?: SportSection.default
+    override suspend fun invoke(sectionDetailsId: Long) : SportSection {
+        return sportSectionListRepository.getSportSectionDetails(sectionDetailsId)!!
     }
 }

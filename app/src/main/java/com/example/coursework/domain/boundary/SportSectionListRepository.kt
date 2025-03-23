@@ -1,11 +1,20 @@
 package com.example.coursework.domain.boundary
 
+import com.example.coursework.data.db.model.DbSportSection
+import com.example.coursework.domain.entity.SectionDetails
 import com.example.coursework.domain.entity.SportSection
 
 
 interface SportSectionListRepository {
-    suspend fun getSportSection(): List<SportSection>
-    suspend fun delete(sectionId: Long)
-    suspend fun update(sportSection: SportSection)
-    suspend fun insert(sportSection: SportSection)
+
+    suspend fun getSportSections(): List<SportSection>
+
+    suspend fun getSportSectionDetails(sectionId: Long): SportSection?
+
+    suspend fun deleteDetails(detailsId: Long)
+
+    suspend fun delete(sportSection: SportSection)
+
+    suspend fun upsert(sportSection: SportSection)
+
 }

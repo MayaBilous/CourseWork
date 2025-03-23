@@ -12,11 +12,11 @@ import com.example.coursework.data.repository.AuthorizationRepositoryImpl
 import com.example.coursework.data.repository.SportSectionListRepositoryImpl
 import com.example.coursework.domain.usecase.CheckAuthorizationUseCase
 import com.example.coursework.domain.usecase.CheckSectionDetailsUseCase
-import com.example.coursework.domain.usecase.DeleteSectionUseCase
+import com.example.coursework.domain.usecase.DeleteDetailsUseCase
+import com.example.coursework.domain.usecase.DeleteSectionWithDetailsUseCase
 import com.example.coursework.domain.usecase.GetSectionDetailsUseCase
 import com.example.coursework.domain.usecase.GetSectionListUseCase
-import com.example.coursework.domain.usecase.InsertSectionUseCase
-import com.example.coursework.domain.usecase.UpdateSectionUseCase
+import com.example.coursework.domain.usecase.UpsertSectionUseCase
 import com.example.coursework.presentation.auth.Authorization
 import com.example.coursework.presentation.auth.mvi.AuthViewModel
 import com.example.coursework.presentation.sectionDetails.SectionDetailsScreen
@@ -53,7 +53,10 @@ fun RootScreen() {
                         GetSectionListUseCase(
                             sportSectionListRepository = SportSectionListRepositoryImpl()
                         ),
-                        DeleteSectionUseCase(
+                        DeleteSectionWithDetailsUseCase(
+                            sportSectionListRepository = SportSectionListRepositoryImpl()
+                        ),
+                        DeleteDetailsUseCase(
                             sportSectionListRepository = SportSectionListRepositoryImpl()
                         )
                     )
@@ -74,14 +77,12 @@ fun RootScreen() {
                             sportSectionListRepository = SportSectionListRepositoryImpl()
                         ),
                         arg.isAddingItem,
-                        UpdateSectionUseCase(
+                        CheckSectionDetailsUseCase(),
+                        UpsertSectionUseCase(
                             sportSectionListRepository = SportSectionListRepositoryImpl()
                         ),
-                        InsertSectionUseCase(
-                            sportSectionListRepository = SportSectionListRepositoryImpl()
-                        ),
-                        CheckSectionDetailsUseCase()
-                    )
+
+                        )
                 })
             )
         }
@@ -96,7 +97,11 @@ data object AuthNavigation
 data class SectionsListNavigation(val isAdmin: Boolean)
 
 @Serializable
-data class SectionDetailsNavigation(val sectionId: Long, val isAdmin: Boolean, val isAddingItem: Boolean)
+data class SectionDetailsNavigation(
+    val sectionId: Long,
+    val isAdmin: Boolean,
+    val isAddingItem: Boolean
+)
 
 inline fun <VM : ViewModel> viewModelFactory(crossinline f: () -> VM) =
     object : ViewModelProvider.Factory {

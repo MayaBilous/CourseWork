@@ -1,17 +1,18 @@
 package com.example.coursework.domain.usecase
 
+
 import com.example.coursework.domain.boundary.SportSectionListRepository
 import com.example.coursework.domain.entity.SportSection
 
-interface InsertSection {
+interface DeleteSectionWithDetails {
     suspend operator fun invoke(sportSection: SportSection)
 }
 
-class InsertSectionUseCase(
+class DeleteSectionWithDetailsUseCase(
     private val sportSectionListRepository: SportSectionListRepository
-) : InsertSection {
+) : DeleteSectionWithDetails {
 
     override suspend fun invoke(sportSection: SportSection) {
-        sportSectionListRepository.insert(sportSection)
+        sportSectionListRepository.delete(sportSection)
     }
 }
