@@ -15,14 +15,8 @@ abstract class SportSectionDao {
     @Upsert
     abstract suspend fun updateSection(dbSection: DbSportSection): Long
 
-    @Upsert
-    abstract suspend fun updateDetails(dbSectionDetails: List<DbSectionDetails>)
-
     @Query("DELETE FROM DbSportSection WHERE id = :sportSectionId")
     abstract suspend fun deleteSectionById(sportSectionId: Long)
-
-    @Query("DELETE FROM DbSectionDetails WHERE id = :detailsId")
-    abstract suspend fun deleteDetailsById(detailsId: Long)
 
     @Query("SELECT * FROM DbSportSection WHERE sectionName = :sectionName")
     abstract suspend fun findSectionByName(sectionName: String): DbSectionWithDetails?
@@ -37,10 +31,5 @@ abstract class SportSectionDao {
 
     @Transaction
     @Delete
-    suspend fun delete (dbSectionWithDetails: DbSectionWithDetails){
-        deleteSectionById(dbSectionWithDetails.sportSection.id ?:0)
-        dbSectionWithDetails.sectionDetails.forEach {
-            deleteDetailsById(it.id ?:0)
-        }
-    }
+    abstract suspend fun delete (dbSectionWithDetails: DbSectionWithDetails)
 }

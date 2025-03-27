@@ -9,6 +9,7 @@ class SportSectionListRepositoryImpl : SportSectionListRepository {
 
     private val mapper = SportSectionMapper()
     private val sportSectionDao = SectionDataBaseProvider.db.SportSectionDao()
+    private val sectionDetailsDao = SectionDataBaseProvider.db.SectionDetailsDao()
 
 
     override suspend fun getSportSections(): List<SportSection> {
@@ -20,22 +21,30 @@ class SportSectionListRepositoryImpl : SportSectionListRepository {
     }
 
     override suspend fun deleteDetails(detailsId: Long) {
-        sportSectionDao.deleteDetailsById(detailsId)
+        sectionDetailsDao.deleteDetailsById(detailsId)
     }
 
     override suspend fun delete(sportSection: SportSection) {
+        sportSectionDao.deleteSectionById(sportSection.id ?:0)
+        sportSection.sectionDetails.forEach {
+            sectionDetailsDao.deleteDetailsById(it.detailsId ?:0)
+        }
         sportSectionDao.delete(mapper.mapToDb(sportSection))
     }
 
     override suspend fun upsert(sportSection: SportSection) {
-        val sectionId = sportSectionDao.updateSection(mapper.mapSectionToDb(sportSection))
-            .let { newId ->
-                sportSection.id ?: newId
-            }
+        val foundSectionId = sportSection.id
+            ?: sportSectionDao.findSectionByName(sportSection.sectionName)?.sportSection?.id
+
+        val sectionIdForDetails = foundSectionId?.let {
+            sportSectionDao.updateSection(mapper.mapSectionToDb(sportSection.copy(id = it)))
+            it
+        } ?: sportSectionDao.updateSection(mapper.mapSectionToDb(sportSection))
+
         val dbSectionDetails = sportSection.sectionDetails.map {
-            mapper.mapDetailsToDb(it.copy(sectionId = sectionId))
+            mapper.mapDetailsToDb(it.copy(sectionId = sectionIdForDetails))
         }
-        sportSectionDao.updateDetails(dbSectionDetails)
+        sectionDetailsDao.updateDetails(dbSectionDetails)
     }
 }
 
