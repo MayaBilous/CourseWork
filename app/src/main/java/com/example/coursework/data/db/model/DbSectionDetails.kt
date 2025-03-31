@@ -18,4 +18,6 @@ data class DbSectionDetails (
     val phoneNumber: String,
     @ColumnInfo(name = "price")
     val price: Int,
+    @ColumnInfo(name = "isSelected")
+    val isSelected: Boolean,
 )

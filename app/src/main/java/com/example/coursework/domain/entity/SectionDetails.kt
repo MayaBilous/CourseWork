@@ -7,16 +7,18 @@ data class SectionDetails(
     val workingDays: String,
     val phoneNumber: String,
     val price: Int,
+    val isSelected: Boolean,
 ) {
 
     companion object {
         val default = SectionDetails(
-            detailsId = 0,
+            detailsId = null,
             address = "",
             workingDays = "",
             phoneNumber = "",
             price = 0,
-            sectionId = 0,
+            sectionId = null,
+            isSelected = false,
         )
     }
 }

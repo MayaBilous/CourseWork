@@ -8,7 +8,7 @@ data class SportSection(
 
     companion object {
         val default = SportSection(
-            id = 0,
+            id = null,
             sectionName = "",
             sectionDetails = emptyList(),
         )

@@ -13,8 +13,17 @@ interface SportSectionListRepository {
 
     suspend fun deleteDetails(detailsId: Long)
 
-    suspend fun delete(sportSection: SportSection)
+    suspend fun deleteSection(sectionId: Long)
 
-    suspend fun upsert(sportSection: SportSection)
+    suspend fun updateSection(sportSection: SportSection)
+
+    suspend fun updateDetails(details: SectionDetails)
+
+    suspend fun addSection(sportSection: SportSection)
+
+    suspend fun addDetails(sectionId: Long, details: SectionDetails)
+
+    suspend fun getDetails() : List<SectionDetails>
+
 
 }

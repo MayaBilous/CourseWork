@@ -10,15 +10,23 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.coursework.data.repository.AuthorizationRepositoryImpl
 import com.example.coursework.data.repository.SportSectionListRepositoryImpl
+import com.example.coursework.domain.usecase.AddDetailsUseCase
+import com.example.coursework.domain.usecase.AddSectionUseCase
+import com.example.coursework.domain.usecase.ChangeDetailsUseCase
+import com.example.coursework.domain.usecase.ChangeSectionUseCase
 import com.example.coursework.domain.usecase.CheckAuthorizationUseCase
 import com.example.coursework.domain.usecase.CheckSectionDetailsUseCase
+import com.example.coursework.domain.usecase.CheckSectionName
+import com.example.coursework.domain.usecase.CheckSectionNameUseCase
 import com.example.coursework.domain.usecase.DeleteDetailsUseCase
 import com.example.coursework.domain.usecase.DeleteSectionWithDetailsUseCase
 import com.example.coursework.domain.usecase.GetSectionDetailsUseCase
 import com.example.coursework.domain.usecase.GetSectionListUseCase
-import com.example.coursework.domain.usecase.UpsertSectionUseCase
+import com.example.coursework.domain.usecase.OrderAmountUseCase
 import com.example.coursework.presentation.auth.Authorization
 import com.example.coursework.presentation.auth.mvi.AuthViewModel
+import com.example.coursework.presentation.club.ClubScreen
+import com.example.coursework.presentation.club.mvi.ClubViewModel
 import com.example.coursework.presentation.sectionDetails.SectionDetailsScreen
 import com.example.coursework.presentation.sectionDetails.mvi.DetailsSportsSectionsViewModel
 import com.example.coursework.presentation.sectionList.SectionListScreen
@@ -56,9 +64,9 @@ fun RootScreen() {
                         DeleteSectionWithDetailsUseCase(
                             sportSectionListRepository = SportSectionListRepositoryImpl()
                         ),
-                        DeleteDetailsUseCase(
+                        OrderAmountUseCase(
                             sportSectionListRepository = SportSectionListRepositoryImpl()
-                        )
+                        ),
                     )
                 })
             )
@@ -77,12 +85,43 @@ fun RootScreen() {
                             sportSectionListRepository = SportSectionListRepositoryImpl()
                         ),
                         arg.isAddingItem,
-                        CheckSectionDetailsUseCase(),
-                        UpsertSectionUseCase(
+                        ChangeSectionUseCase(
                             sportSectionListRepository = SportSectionListRepositoryImpl()
                         ),
+                        AddSectionUseCase(
+                            sportSectionListRepository = SportSectionListRepositoryImpl()
+                        ),
+                        CheckSectionNameUseCase(),
+                        DeleteDetailsUseCase(
+                            sportSectionListRepository = SportSectionListRepositoryImpl()
+                        ),
+                    )
+                })
+            )
+        }
 
-                        )
+        composable<ClubNavigation> {
+            val arg = it.toRoute<ClubNavigation>()
+            ClubScreen(
+                navController = navController,
+                viewModel = viewModel(factory = viewModelFactory {
+                    ClubViewModel(
+                        arg.sectionId,
+                        arg.detailsId,
+                        arg.isAdmin,
+
+                        GetSectionDetailsUseCase(
+                            sportSectionListRepository = SportSectionListRepositoryImpl()
+                        ),
+                        arg.isAddingItem,
+                        CheckSectionDetailsUseCase(),
+                        ChangeDetailsUseCase(
+                            sportSectionListRepository = SportSectionListRepositoryImpl()
+                        ),
+                        AddDetailsUseCase(
+                            sportSectionListRepository = SportSectionListRepositoryImpl()
+                        ),
+                    )
                 })
             )
         }
@@ -99,6 +138,14 @@ data class SectionsListNavigation(val isAdmin: Boolean)
 @Serializable
 data class SectionDetailsNavigation(
     val sectionId: Long,
+    val isAdmin: Boolean,
+    val isAddingItem: Boolean
+)
+
+@Serializable
+data class ClubNavigation(
+    val sectionId: Long,
+    val detailsId: Long?,
     val isAdmin: Boolean,
     val isAddingItem: Boolean
 )

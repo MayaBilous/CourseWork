@@ -5,9 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.coursework.domain.entity.SportSection
 import com.example.coursework.domain.usecase.DeleteDetails
 import com.example.coursework.domain.usecase.DeleteSectionWithDetails
-import com.example.coursework.domain.usecase.GetSectionDetails
 import com.example.coursework.domain.usecase.GetSectionList
-import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListUserIntent.*
+import com.example.coursework.domain.usecase.OrderAmount
+import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListUserIntent.DeleteSportSectionWithDetails
+import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListUserIntent.InputSearchText
+import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListUserIntent.NavigateToAuth
+import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListUserIntent.NavigateToSectionDetails
+import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListUserIntent.Sorting
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -21,7 +25,7 @@ class SectionListViewModel(
     isAdmin: Boolean,
     private val getSectionList: GetSectionList,
     private val deleteSectionWithDetails: DeleteSectionWithDetails,
-    private val deleteDetails: DeleteDetails,
+    private val orderAmount: OrderAmount,
 ) : ViewModel() {
 
     private var _state = MutableStateFlow(SectionListState.default.copy(isAdmin = isAdmin))
@@ -39,14 +43,13 @@ class SectionListViewModel(
             _userIntent.collectLatest { intent ->
                 when (intent) {
                     is InputSearchText -> inputSearchText(searchText = intent.searchText)
-                    is Sorting -> soring()
+                    is Sorting -> sort()
                     is NavigateToSectionDetails -> navigateToSectionDetails(
                         intent.sectionId,
                         intent.isAddingItem
                     )
 
                     is NavigateToAuth -> navigateToAuth()
-                    is DeleteSectionDetails -> deleteDetails(intent.detailsId)
                     is DeleteSportSectionWithDetails -> deleteSectionWithDetails(intent.sportSection)
                 }
             }
@@ -63,19 +66,15 @@ class SectionListViewModel(
     private suspend fun loadSportSections() {
         val sections = getSectionList.invoke()
         _state.emit(state.value.copy(sportSections = sections))
+        _state.emit(state.value.copy(sum = orderAmount.invoke()))
     }
 
     private suspend fun inputSearchText(searchText: String) {
         _state.emit(state.value.copy(searchText = searchText))
     }
 
-    private suspend fun soring() {
+    private suspend fun sort() {
         _state.emit(state.value.copy(isSortedAsc = !state.value.isSortedAsc))
-    }
-
-    private suspend fun deleteDetails(detailsId: Long) {
-        deleteDetails.invoke(detailsId)
-        _state.emit(state.value.copy(sportSections = getSectionList.invoke()))
     }
 
     private suspend fun deleteSectionWithDetails(sportSection: SportSection) {
@@ -101,11 +100,13 @@ class SectionListViewModel(
 
     }
 
+
     data class SectionListState(
         val isAdmin: Boolean,
         val searchText: String,
         val sportSections: List<SportSection>,
         val isSortedAsc: Boolean,
+        val sum : Int,
 
         ) {
         val uiSportSection: List<SportSection>
@@ -137,6 +138,7 @@ class SectionListViewModel(
                 searchText = "",
                 sportSections = emptyList(),
                 isSortedAsc = true,
+                sum = 0,
             )
         }
     }
@@ -146,7 +148,6 @@ class SectionListViewModel(
         data object Sorting : SectionListUserIntent
         data class NavigateToSectionDetails(val sectionId: Long = 0, val isAddingItem: Boolean) : SectionListUserIntent
         data object NavigateToAuth : SectionListUserIntent
-        data class DeleteSectionDetails(val detailsId: Long) : SectionListUserIntent
         data class DeleteSportSectionWithDetails(val sportSection: SportSection) : SectionListUserIntent
 
     }

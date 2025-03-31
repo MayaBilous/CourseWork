@@ -1,15 +1,19 @@
 package com.example.coursework.presentation.sectionDetails
 
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -30,10 +34,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.coursework.presentation.ShowDialog
+import com.example.coursework.presentation.root.ClubNavigation
 import com.example.coursework.presentation.root.SectionsListNavigation
 import com.example.coursework.presentation.sectionDetails.mvi.DetailsSportsSectionsViewModel
 import com.example.coursework.presentation.sectionDetails.mvi.DetailsSportsSectionsViewModel.SectionDetailsEvent
 import com.example.coursework.presentation.sectionDetails.mvi.DetailsSportsSectionsViewModel.SectionDetailsUserIntent
+import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListUserIntent.DeleteSportSectionWithDetails
+import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListUserIntent.NavigateToSectionDetails
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,7 +56,7 @@ fun SectionDetailsScreen(
     LaunchedEffect(viewModel.event) {
         viewModel.event.collectLatest { event ->
             when (event) {
-                is SectionDetailsEvent.Navigate -> navController.navigate(
+                is SectionDetailsEvent.NavigateToSectionList -> navController.navigate(
                     SectionsListNavigation(
                         isAdmin = event.isAdmin
                     )
@@ -59,6 +66,15 @@ fun SectionDetailsScreen(
                     showDialog = true
                     dialogText = "No data available. Please try again."
                 }
+
+                is SectionDetailsEvent.NavigateToClub -> navController.navigate(
+                    ClubNavigation(
+                        sectionId = event.sectionId,
+                        isAdmin = state.isAdmin,
+                        isAddingItem = event.isAddingItem,
+                        detailsId = event.detailsId,
+                    )
+                )
             }
         }
     }
@@ -75,6 +91,7 @@ fun SectionDetailsScreen(
             .padding(20.dp)
 
     ) {
+
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -99,70 +116,65 @@ fun SectionDetailsScreen(
             )
         }
 
-        TextField(
-            state.sectionDetails.address,
-            onValueChange = { viewModel.process(SectionDetailsUserIntent.ChangeAddress(it)) },
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                disabledTextColor = Color.Black,
-            ),
-            textStyle = TextStyle(
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold
-            ),
-            enabled = state.isAdmin,
-            label = { Text("address") }
-        )
+        if (!state.isAddingItem){
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
 
-        TextField(
-            state.sectionDetails.workingDays,
-            onValueChange = { viewModel.process(SectionDetailsUserIntent.ChangeWorkingDays(it)) },
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                disabledTextColor = Color.Black,
-            ),
-            textStyle = TextStyle(
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold
-            ),
-            enabled = state.isAdmin,
-            label = { Text("working days") }
-        )
+                Text(modifier = Modifier.align(Alignment.Bottom),
+                    text = "Clubs: ",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 15.sp )
+
+                if (state.isAdmin) {
+                    Button (onClick = { viewModel.process(SectionDetailsUserIntent.NavigateToClub(
+                        sectionId = state.sectionId ?:0,
+                        isAddingItem = true,
+                        detailsId = null,
+                    ))},
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF4080f0)
+                        )) {
+                        Text("Add")
+                    }
+                }
+            }
+    }
 
 
-        TextField(
-            state.sectionDetails.price.toString(),
-            onValueChange = { viewModel.process(SectionDetailsUserIntent.ChangePrice(it.toInt())) },
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                disabledTextColor = Color.Black,
-            ),
-            textStyle = TextStyle(
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold
-            ),
-            enabled = state.isAdmin,
-            label = { Text("price") }
-        )
+        Column(
+            modifier = Modifier
+        ) {
+            state.sportSection.sectionDetails.forEach { item ->
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
 
-        TextField(
-            state.sectionDetails.phoneNumber,
-            onValueChange = { viewModel.process(SectionDetailsUserIntent.ChangePhoneNumber(it)) },
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                disabledTextColor = Color.Black,
-            ),
-            textStyle = TextStyle(
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold
-            ),
-            enabled = state.isAdmin,
-            label = { Text("phone number") }
-        )
+                    Text(text = item.address,
+                        modifier = Modifier
+                            .clickable {
+                                viewModel.process(SectionDetailsUserIntent.NavigateToClub(
+                                    sectionId = item.sectionId ?:0,
+                                    isAddingItem = false,
+                                    detailsId = item.detailsId,
+                                ))
+                            })
+
+                    if (state.isAdmin) {
+                        Icon(
+                            Icons.Default.Delete, "",
+                            modifier = Modifier
+                                .clickable {
+                                    viewModel.process(
+                                        SectionDetailsUserIntent.DeleteSectionDetails(item.detailsId ?:0)
+                                    )
+                                })
+                    }
+                }
+            }
+        }
 
         Column(
             horizontalAlignment = Alignment.End,
@@ -184,7 +196,11 @@ fun SectionDetailsScreen(
                 }
                 Button(onClick = {
                     if (state.isAdmin) {
-                            viewModel.process(SectionDetailsUserIntent.UpdateSportSection(state.sportSection))
+                        if (state.isAddingItem){
+                            viewModel.process(SectionDetailsUserIntent.AddSportSection(state.sportSection))
+                        }else{
+                            viewModel.process(SectionDetailsUserIntent.UpdateSection(state.sportSection))
+                        }
                     }else{
                         viewModel.process(SectionDetailsUserIntent.NavigateToSectionList)
                     }

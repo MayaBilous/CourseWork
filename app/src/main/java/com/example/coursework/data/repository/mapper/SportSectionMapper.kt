@@ -22,6 +22,7 @@ class SportSectionMapper {
                     workingDays = it.workingDays,
                     phoneNumber = it.phoneNumber,
                     price = it.price,
+                    isSelected = it.isSelected,
                 )
             }
         )
@@ -41,6 +42,7 @@ class SportSectionMapper {
                     workingDays = it.workingDays,
                     phoneNumber = it.phoneNumber,
                     price = it.price,
+                    isSelected = it.isSelected,
                 )
             }
         )
@@ -61,6 +63,24 @@ class SportSectionMapper {
             workingDays = sectionDetails.workingDays,
             phoneNumber = sectionDetails.phoneNumber,
             price = sectionDetails.price,
+            isSelected = sectionDetails.isSelected,
         )
+    }
+
+
+    fun mapToDetailsList(
+        dbSectionDetails: List<DbSectionDetails>
+    ): List<SectionDetails> {
+        return dbSectionDetails.map { dbSectionDetails ->
+            SectionDetails(
+                        detailsId = dbSectionDetails.id,
+                        sectionId = dbSectionDetails.sectionId,
+                        address = dbSectionDetails.address,
+                        workingDays = dbSectionDetails.workingDays,
+                        phoneNumber = dbSectionDetails.phoneNumber,
+                        price = dbSectionDetails.price,
+                        isSelected = dbSectionDetails.isSelected,
+            )
+        }
     }
 }

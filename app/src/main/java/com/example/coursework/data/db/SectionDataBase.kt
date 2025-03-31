@@ -9,7 +9,7 @@ import com.example.coursework.data.db.model.DbSportSection
 import com.example.coursework.data.db.model.DbLogin
 import com.example.coursework.data.db.model.DbSectionDetails
 
-@Database([DbSportSection::class, DbSectionDetails::class, DbLogin::class], version = 2)
+@Database([DbSportSection::class, DbSectionDetails::class, DbLogin::class], version = 3)
 abstract class SectionDataBase : RoomDatabase() {
     abstract fun LoginDao(): LoginDao
     abstract fun SportSectionDao(): SportSectionDao

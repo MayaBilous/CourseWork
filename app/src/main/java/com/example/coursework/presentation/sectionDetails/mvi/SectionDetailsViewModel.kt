@@ -4,10 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.coursework.domain.entity.SectionDetails
 import com.example.coursework.domain.entity.SportSection
+import com.example.coursework.domain.usecase.AddSection
+import com.example.coursework.domain.usecase.ChangeDetails
+import com.example.coursework.domain.usecase.ChangeSection
 import com.example.coursework.domain.usecase.CheckSectionDetails
+import com.example.coursework.domain.usecase.CheckSectionName
+import com.example.coursework.domain.usecase.DeleteDetails
 import com.example.coursework.domain.usecase.GetSectionDetails
-import com.example.coursework.domain.usecase.UpsertSection
 import com.example.coursework.presentation.sectionDetails.mvi.DetailsSportsSectionsViewModel.SectionDetailsUserIntent.NavigateToSectionList
+import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListEvent
+import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListUserIntent
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -18,12 +24,14 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class DetailsSportsSectionsViewModel(
-    val sectionId: Long = 0,
+    val sectionId: Long? = null,
     val isAdmin: Boolean,
     private val getSectionDetails: GetSectionDetails,
     val isAddingItem: Boolean,
-    val checkSectionDetails: CheckSectionDetails,
-    private val upsertSection: UpsertSection,
+    val changeSection: ChangeSection,
+    val addSection: AddSection,
+    val checkSectionName: CheckSectionName,
+    private val deleteDetails: DeleteDetails,
 ) : ViewModel() {
 
     private var _state = MutableStateFlow(
@@ -33,6 +41,7 @@ class DetailsSportsSectionsViewModel(
             isAddingItem = isAddingItem,
             sportSection = SportSection.default,
             sectionDetails = SectionDetails.default,
+            detailsId = null,
         )
     )
     val state: StateFlow<SectionsDetailsListState>
@@ -49,12 +58,16 @@ class DetailsSportsSectionsViewModel(
             _userIntent.collectLatest { intent ->
                 when (intent) {
                     is NavigateToSectionList -> navigateToSectionList()
-                    is SectionDetailsUserIntent.ChangeAddress -> changeAddress(address = intent.address)
-                    is SectionDetailsUserIntent.ChangePhoneNumber -> changePhoneNumber(phoneNumber = intent.phoneNumber)
                     is SectionDetailsUserIntent.ChangeSectionName -> changeSectionName(sectionName = intent.sectionName)
-                    is SectionDetailsUserIntent.ChangeWorkingDays -> changeWorkingDays(workingDays = intent.workingDays)
-                    is SectionDetailsUserIntent.ChangePrice -> changePrice(price = intent.price)
-                    is SectionDetailsUserIntent.UpdateSportSection -> updateSportSection(intent.sportSection.copy(sectionDetails = listOf(state.value.sectionDetails)))
+                    is SectionDetailsUserIntent.AddSportSection -> addSportSectionWithDetails(intent.sportSection)
+                    is SectionDetailsUserIntent.DeleteSectionDetails -> deleteDetails(intent.detailsId)
+                    is SectionDetailsUserIntent.NavigateToClub -> navigateToClub(
+                        sectionId = intent.sectionId,
+                        isAddingItem = intent.isAddingItem,
+                        detailsId = intent.detailsId,
+                    )
+
+                    is SectionDetailsUserIntent.UpdateSection -> updateSportSection(intent.sportSection)
                 }
             }
         }
@@ -64,20 +77,29 @@ class DetailsSportsSectionsViewModel(
     }
 
     private suspend fun updateSportSection(sportSection: SportSection) {
-
-        val result = checkSectionDetails(sportSection)
+        val result = checkSectionName(sportSection)
         if (result) {
-            upsertSection(sportSection)
-            _event.emit(SectionDetailsEvent.Navigate(isAdmin = isAdmin))
+            changeSection(sportSection)
+            _event.emit(SectionDetailsEvent.NavigateToSectionList(isAdmin = isAdmin))
+        } else {
+            _event.emit(SectionDetailsEvent.EmptyData)
+        }
+    }
+
+    private suspend fun addSportSectionWithDetails(sportSection: SportSection) {
+        val result = checkSectionName(sportSection)
+        if (result) {
+            addSection(sportSection)
+            _event.emit(SectionDetailsEvent.NavigateToSectionList(isAdmin = isAdmin))
         } else {
             _event.emit(SectionDetailsEvent.EmptyData)
         }
     }
 
     private suspend fun loadSportSectionDetails() {
-        val sectionDetails = getSectionDetails.invoke(sectionId)
+        val sectionDetails = getSectionDetails.invoke(sectionId ?:0)
         _state.emit(state.value.copy(sportSection = sectionDetails))
-        _state.emit(state.value.copy(sectionDetails = sectionDetails.sectionDetails.find { it.sectionId == sectionId }!!))
+        _state.emit(state.value.copy(sectionDetails = sectionDetails.sectionDetails.find { it.sectionId == sectionId }))
     }
 
     private suspend fun changeSectionName(sectionName: String) {
@@ -88,36 +110,21 @@ class DetailsSportsSectionsViewModel(
         )
     }
 
-    private suspend fun changePrice(price: Int) {
-        _state.emit(
-            state.value.copy(
-                sectionDetails = _state.value.sectionDetails.copy(price = price)
+    private suspend fun navigateToClub(sectionId: Long, isAddingItem: Boolean, detailsId: Long?) {
+        _event.emit(
+            SectionDetailsEvent.NavigateToClub(
+                isAdmin = state.value.isAdmin,
+                isAddingItem = isAddingItem,
+                sectionId = sectionId,
+                detailsId = detailsId
             )
         )
     }
 
-    private suspend fun changeAddress(address: String) {
-        _state.emit(
-            state.value.copy(
-                sectionDetails = _state.value.sectionDetails.copy(address = address)
-            )
-        )
-    }
 
-    private suspend fun changePhoneNumber(phoneNumber: String) {
-        _state.emit(
-            state.value.copy(
-                sectionDetails = _state.value.sectionDetails.copy(phoneNumber = phoneNumber)
-            )
-        )
-    }
-
-    private suspend fun changeWorkingDays(workingDays: String) {
-        _state.emit(
-            state.value.copy(
-                sectionDetails = _state.value.sectionDetails.copy(workingDays = workingDays)
-            )
-        )
+    private suspend fun deleteDetails(detailsId: Long) {
+        deleteDetails.invoke(detailsId)
+        loadSportSectionDetails()
     }
 
     fun process(userIntent: SectionDetailsUserIntent) {
@@ -127,30 +134,31 @@ class DetailsSportsSectionsViewModel(
     }
 
     private suspend fun navigateToSectionList() {
-        _event.emit(SectionDetailsEvent.Navigate(isAdmin = state.value.isAdmin))
+        _event.emit(SectionDetailsEvent.NavigateToSectionList(isAdmin = state.value.isAdmin))
     }
 
     data class SectionsDetailsListState(
-        val sectionId: Long,
+        val sectionId: Long?,
+        val detailsId: Long?,
         val isAdmin: Boolean,
         val isAddingItem: Boolean,
         val sportSection: SportSection,
-        val sectionDetails: SectionDetails,
+        val sectionDetails: SectionDetails?,
     ) {
     }
 
     sealed interface SectionDetailsUserIntent {
         data class ChangeSectionName(val sectionName: String) : SectionDetailsUserIntent
-        data class ChangeAddress(val address: String) : SectionDetailsUserIntent
-        data class ChangeWorkingDays(val workingDays: String) : SectionDetailsUserIntent
-        data class ChangePhoneNumber(val phoneNumber: String) : SectionDetailsUserIntent
-        data class ChangePrice(val price: Int) : SectionDetailsUserIntent
-        data class UpdateSportSection(val sportSection: SportSection) : SectionDetailsUserIntent
+        data class AddSportSection(val sportSection: SportSection) : SectionDetailsUserIntent
         data object NavigateToSectionList : SectionDetailsUserIntent
+        data class NavigateToClub(val sectionId: Long, val isAddingItem: Boolean, val detailsId: Long?) : SectionDetailsUserIntent
+        data class DeleteSectionDetails(val detailsId: Long) : SectionDetailsUserIntent
+        data class UpdateSection(val sportSection: SportSection) :SectionDetailsUserIntent
     }
 
     sealed interface SectionDetailsEvent {
-        data class Navigate(val isAdmin: Boolean) : SectionDetailsEvent
+        data class NavigateToSectionList(val isAdmin: Boolean) : SectionDetailsEvent
+        data class NavigateToClub(val sectionId: Long, val isAdmin: Boolean, val isAddingItem: Boolean, val detailsId: Long?) : SectionDetailsEvent
         data object EmptyData : SectionDetailsEvent
     }
 

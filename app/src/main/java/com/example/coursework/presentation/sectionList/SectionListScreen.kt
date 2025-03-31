@@ -24,27 +24,20 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.example.coursework.domain.entity.SectionDetails
 import com.example.coursework.presentation.root.AuthNavigation
 import com.example.coursework.presentation.root.SectionDetailsNavigation
-import com.example.coursework.presentation.sectionDetails.mvi.DetailsSportsSectionsViewModel.SectionDetailsUserIntent
 import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel
 import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListEvent
-import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListUserIntent.DeleteSectionDetails
 import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListUserIntent.DeleteSportSectionWithDetails
 import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListUserIntent.InputSearchText
 import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListUserIntent.NavigateToAuth
@@ -60,7 +53,6 @@ fun SectionListScreen(
 ) {
 
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val expandedItems = remember { mutableStateMapOf<Long, Boolean>() }
 
     LaunchedEffect(viewModel.event) {
         viewModel.event.collectLatest { event ->
@@ -126,52 +118,8 @@ fun SectionListScreen(
                     Text(text = item.sectionName,
                         modifier = Modifier
                             .clickable {
-                                expandedItems[item.id ?: -1] =
-                                    !(expandedItems[item.id ?: -1] ?: false)
+                                viewModel.process(NavigateToSectionDetails(item.id ?: 0, false))
                             })
-
-                    DropdownMenu(
-                        expanded = expandedItems[item.id ?: -1] == true,
-                        onDismissRequest = { expandedItems[item.id ?: -1] = false },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        item.sectionDetails.forEach { detailsItem ->
-                            DropdownMenuItem({
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Text(
-                                        text = detailsItem.address,
-                                        modifier = Modifier.weight(1f)
-                                    )
-
-                                    if (state.isAdmin) {
-                                        Icon(
-                                            imageVector = Icons.Default.Delete,
-                                            contentDescription = "Delete",
-                                            modifier = Modifier
-                                                .clickable {
-                                                    viewModel.process(
-                                                        DeleteSectionDetails(
-                                                            detailsItem.detailsId ?: -1
-                                                        )
-                                                    )
-                                                }
-                                                .padding(start = 8.dp)
-                                        )
-                                    }
-                                }
-                            },
-                                onClick = {
-                                    viewModel.process(NavigateToSectionDetails(item.id ?: 0, false))
-                                    expandedItems[item.id ?: -1] = false
-                                }
-                            )
-                        }
-                    }
-
 
                     if (state.isAdmin) {
                         Icon(Icons.Default.Delete, "",
@@ -182,22 +130,6 @@ fun SectionListScreen(
                                     )
                                 })
                     }
-
-//                    if (expandedItem == item.id) {
-//                        expandedMenu(
-//                            isAdmin = state.isAdmin,
-//                            sectionDetails = item.sectionDetails,
-//                            onDeleteClick = { viewModel.process(DeleteSectionDetails(it)) },
-//                            navigation = {
-//                                viewModel.process(
-//                                    NavigateToSectionDetails(
-//                                        item.id,
-//                                        isAddingItem = false
-//                                    )
-//                                )
-//                            }
-//                        )
-//                    }
                 }
             }
         }
@@ -226,47 +158,13 @@ fun SectionListScreen(
                                 NavigateToSectionDetails(isAddingItem = true)
                             )
                         })
+            }else{
+                Text(modifier = Modifier.align(Alignment.Bottom),
+                    text = "Sum: ${state.sum}",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 15.sp )
             }
         }
     }
 }
-
-//@Composable
-//private fun expandedMenu(
-//    isAdmin: Boolean,
-//    sectionDetails: List<SectionDetails>,
-//    onDeleteClick: (Long) -> Unit,
-//    navigation: () -> Unit
-//) {
-
-//    Column(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .background(Color(0xFF4080f0))
-//    ) {
-//        sectionDetails.forEach { detailsItem ->
-//            Row(
-//                horizontalArrangement = Arrangement.SpaceBetween,
-//                modifier = Modifier.fillMaxWidth()
-//            ) {
-//                Text(text = detailsItem.address,
-//                    modifier = Modifier
-//                        .clickable {
-//                            navigation()
-//                        })
-//
-//                if (isAdmin) {
-//                    Icon(
-//                        imageVector = Icons.Default.Delete,
-//                        contentDescription = "Delete",
-//                        modifier = Modifier
-//                            .clickable {
-//                                onDeleteClick(detailsItem.detailsId!!)
-//                            }
-//                    )
-//                }
-//            }
-//        }
-//    }
-//}
 
