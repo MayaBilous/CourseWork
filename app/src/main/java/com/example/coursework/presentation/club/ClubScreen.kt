@@ -147,7 +147,7 @@ fun ClubScreen(
                 fontWeight = FontWeight.Bold
             ),
             enabled = state.isAdmin,
-            label = { Text("price") }
+            label = { Text("price UAH/Occupation") }
         )
 
         TextField(

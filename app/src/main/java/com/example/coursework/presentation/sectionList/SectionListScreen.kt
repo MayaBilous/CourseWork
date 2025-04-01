@@ -1,7 +1,9 @@
 package com.example.coursework.presentation.sectionList
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,11 +31,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.coursework.R
 import com.example.coursework.presentation.root.AuthNavigation
 import com.example.coursework.presentation.root.SectionDetailsNavigation
 import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel
@@ -79,6 +83,12 @@ fun SectionListScreen(
             .fillMaxSize()
             .padding(20.dp)
     ) {
+            Image(
+                painter = painterResource(id = R.drawable.sport),
+                contentDescription = "sport",
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
@@ -159,7 +169,7 @@ fun SectionListScreen(
                             )
                         })
             }else{
-                Text(modifier = Modifier.align(Alignment.Bottom),
+                Text(modifier = Modifier.align(Alignment.Top),
                     text = "Sum: ${state.sum}",
                     fontWeight = FontWeight.Bold,
                     fontSize = 15.sp )
