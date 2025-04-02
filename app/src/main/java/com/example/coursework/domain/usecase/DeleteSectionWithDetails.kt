@@ -13,6 +13,6 @@ class DeleteSectionWithDetailsUseCase(
 ) : DeleteSectionWithDetails {
 
     override suspend fun invoke(sportSection: SportSection) {
-        sportSectionListRepository.deleteSection(sportSection.id ?:0)
+        sportSectionListRepository.deleteSection(sportSection.id ?: 0)
     }
 }

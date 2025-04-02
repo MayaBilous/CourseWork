@@ -1,6 +1,5 @@
 package com.example.coursework.domain.boundary
 
-import com.example.coursework.data.db.model.DbSportSection
 import com.example.coursework.domain.entity.SectionDetails
 import com.example.coursework.domain.entity.SportSection
 
@@ -23,7 +22,7 @@ interface SportSectionListRepository {
 
     suspend fun addDetails(sectionId: Long, details: SectionDetails)
 
-    suspend fun getDetails() : List<SectionDetails>
+    suspend fun getDetails(): List<SectionDetails>
 
 
 }

@@ -5,15 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.coursework.domain.entity.SectionDetails
 import com.example.coursework.domain.entity.SportSection
 import com.example.coursework.domain.usecase.AddSection
-import com.example.coursework.domain.usecase.ChangeDetails
 import com.example.coursework.domain.usecase.ChangeSection
-import com.example.coursework.domain.usecase.CheckSectionDetails
 import com.example.coursework.domain.usecase.CheckSectionName
 import com.example.coursework.domain.usecase.DeleteDetails
 import com.example.coursework.domain.usecase.GetSectionDetails
 import com.example.coursework.presentation.sectionDetails.mvi.DetailsSportsSectionsViewModel.SectionDetailsUserIntent.NavigateToSectionList
-import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListEvent
-import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListUserIntent
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -97,7 +93,7 @@ class DetailsSportsSectionsViewModel(
     }
 
     private suspend fun loadSportSectionDetails() {
-        val sectionDetails = getSectionDetails.invoke(sectionId ?:0)
+        val sectionDetails = getSectionDetails.invoke(sectionId ?: 0)
         _state.emit(state.value.copy(sportSection = sectionDetails))
         _state.emit(state.value.copy(sectionDetails = sectionDetails.sectionDetails.find { it.sectionId == sectionId }))
     }
@@ -151,14 +147,25 @@ class DetailsSportsSectionsViewModel(
         data class ChangeSectionName(val sectionName: String) : SectionDetailsUserIntent
         data class AddSportSection(val sportSection: SportSection) : SectionDetailsUserIntent
         data object NavigateToSectionList : SectionDetailsUserIntent
-        data class NavigateToClub(val sectionId: Long, val isAddingItem: Boolean, val detailsId: Long?) : SectionDetailsUserIntent
+        data class NavigateToClub(
+            val sectionId: Long,
+            val isAddingItem: Boolean,
+            val detailsId: Long?
+        ) : SectionDetailsUserIntent
+
         data class DeleteSectionDetails(val detailsId: Long) : SectionDetailsUserIntent
-        data class UpdateSection(val sportSection: SportSection) :SectionDetailsUserIntent
+        data class UpdateSection(val sportSection: SportSection) : SectionDetailsUserIntent
     }
 
     sealed interface SectionDetailsEvent {
         data class NavigateToSectionList(val isAdmin: Boolean) : SectionDetailsEvent
-        data class NavigateToClub(val sectionId: Long, val isAdmin: Boolean, val isAddingItem: Boolean, val detailsId: Long?) : SectionDetailsEvent
+        data class NavigateToClub(
+            val sectionId: Long,
+            val isAdmin: Boolean,
+            val isAddingItem: Boolean,
+            val detailsId: Long?
+        ) : SectionDetailsEvent
+
         data object EmptyData : SectionDetailsEvent
     }
 

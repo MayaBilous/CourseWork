@@ -39,8 +39,6 @@ import com.example.coursework.presentation.root.SectionsListNavigation
 import com.example.coursework.presentation.sectionDetails.mvi.DetailsSportsSectionsViewModel
 import com.example.coursework.presentation.sectionDetails.mvi.DetailsSportsSectionsViewModel.SectionDetailsEvent
 import com.example.coursework.presentation.sectionDetails.mvi.DetailsSportsSectionsViewModel.SectionDetailsUserIntent
-import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListUserIntent.DeleteSportSectionWithDetails
-import com.example.coursework.presentation.sectionList.mvi.SectionListViewModel.SectionListUserIntent.NavigateToSectionDetails
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -116,31 +114,39 @@ fun SectionDetailsScreen(
             )
         }
 
-        if (!state.isAddingItem){
+        if (!state.isAddingItem) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
 
-                Text(modifier = Modifier.align(Alignment.Bottom),
+                Text(
+                    modifier = Modifier.align(Alignment.Bottom),
                     text = "Clubs: ",
                     fontWeight = FontWeight.Bold,
-                    fontSize = 15.sp )
+                    fontSize = 15.sp
+                )
 
                 if (state.isAdmin) {
-                    Button (onClick = { viewModel.process(SectionDetailsUserIntent.NavigateToClub(
-                        sectionId = state.sectionId ?:0,
-                        isAddingItem = true,
-                        detailsId = null,
-                    ))},
+                    Button(
+                        onClick = {
+                            viewModel.process(
+                                SectionDetailsUserIntent.NavigateToClub(
+                                    sectionId = state.sectionId ?: 0,
+                                    isAddingItem = true,
+                                    detailsId = null,
+                                )
+                            )
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF4080f0)
-                        )) {
+                        )
+                    ) {
                         Text("Add")
                     }
                 }
             }
-    }
+        }
 
 
         Column(
@@ -155,11 +161,13 @@ fun SectionDetailsScreen(
                     Text(text = item.address,
                         modifier = Modifier
                             .clickable {
-                                viewModel.process(SectionDetailsUserIntent.NavigateToClub(
-                                    sectionId = item.sectionId ?:0,
-                                    isAddingItem = false,
-                                    detailsId = item.detailsId,
-                                ))
+                                viewModel.process(
+                                    SectionDetailsUserIntent.NavigateToClub(
+                                        sectionId = item.sectionId ?: 0,
+                                        isAddingItem = false,
+                                        detailsId = item.detailsId,
+                                    )
+                                )
                             })
 
                     if (state.isAdmin) {
@@ -168,7 +176,9 @@ fun SectionDetailsScreen(
                             modifier = Modifier
                                 .clickable {
                                     viewModel.process(
-                                        SectionDetailsUserIntent.DeleteSectionDetails(item.detailsId ?:0)
+                                        SectionDetailsUserIntent.DeleteSectionDetails(
+                                            item.detailsId ?: 0
+                                        )
                                     )
                                 })
                     }
@@ -187,27 +197,31 @@ fun SectionDetailsScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 if (state.isAdmin) {
-                    Button(onClick = { viewModel.process(SectionDetailsUserIntent.NavigateToSectionList) },
+                    Button(
+                        onClick = { viewModel.process(SectionDetailsUserIntent.NavigateToSectionList) },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF4080f0)
-                        )) {
+                        )
+                    ) {
                         Text("Cancel")
                     }
                 }
-                Button(onClick = {
-                    if (state.isAdmin) {
-                        if (state.isAddingItem){
-                            viewModel.process(SectionDetailsUserIntent.AddSportSection(state.sportSection))
-                        }else{
-                            viewModel.process(SectionDetailsUserIntent.UpdateSection(state.sportSection))
+                Button(
+                    onClick = {
+                        if (state.isAdmin) {
+                            if (state.isAddingItem) {
+                                viewModel.process(SectionDetailsUserIntent.AddSportSection(state.sportSection))
+                            } else {
+                                viewModel.process(SectionDetailsUserIntent.UpdateSection(state.sportSection))
+                            }
+                        } else {
+                            viewModel.process(SectionDetailsUserIntent.NavigateToSectionList)
                         }
-                    }else{
-                        viewModel.process(SectionDetailsUserIntent.NavigateToSectionList)
-                    }
-                },
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF4080f0)
-                    )) {
+                    )
+                ) {
                     Text("Ok")
                 }
             }

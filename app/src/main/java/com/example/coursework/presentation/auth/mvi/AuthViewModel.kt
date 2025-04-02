@@ -58,7 +58,7 @@ class AuthViewModel(
 
     private suspend fun checkAuthorization(state: AuthState) {
         val result = checkAuthorization(login = state.login)
-        when(result) {
+        when (result) {
             AuthResult.EMPTY -> _event.emit(AuthEvent.EmptyData)
             AuthResult.INCORRECT -> _event.emit(AuthEvent.IncorrectData)
             AuthResult.USER -> _event.emit(AuthEvent.Navigate(isAdmin = false))

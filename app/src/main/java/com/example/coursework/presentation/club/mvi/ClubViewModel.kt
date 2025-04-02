@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class ClubViewModel (
+class ClubViewModel(
     val sectionId: Long = 0,
     val detailsId: Long? = 0,
     val isAdmin: Boolean,
@@ -62,18 +62,20 @@ class ClubViewModel (
                 }
             }
         }
-            viewModelScope.launch { loadSportSectionDetails() }
+        viewModelScope.launch { loadSportSectionDetails() }
     }
 
     private suspend fun updateSectionDetails(sectionDetails: SectionDetails) {
         val result = checkSectionDetails(sectionDetails)
         if (result) {
             changeDetails(sectionDetails)
-            _event.emit(ClubEvent.NavigateToDetails(
-                sectionId = sectionId,
-                isAdmin = isAdmin,
-                isAddingItem = false
-            ))
+            _event.emit(
+                ClubEvent.NavigateToDetails(
+                    sectionId = sectionId,
+                    isAdmin = isAdmin,
+                    isAddingItem = false
+                )
+            )
         } else {
             _event.emit(ClubEvent.EmptyData)
         }
@@ -83,10 +85,13 @@ class ClubViewModel (
         val result = checkSectionDetails(sectionDetails)
         if (result) {
             addDetails(sectionId, sectionDetails)
-            _event.emit(ClubEvent.NavigateToDetails(
-                isAdmin = state.value.isAdmin,
-                isAddingItem = false,
-                sectionId = sectionId))
+            _event.emit(
+                ClubEvent.NavigateToDetails(
+                    isAdmin = state.value.isAdmin,
+                    isAddingItem = false,
+                    sectionId = sectionId
+                )
+            )
         } else {
             _event.emit(ClubEvent.EmptyData)
         }
@@ -116,7 +121,6 @@ class ClubViewModel (
             )
         )
     }
-
 
 
     private suspend fun changePhoneNumber(phoneNumber: String) {
@@ -177,12 +181,19 @@ class ClubViewModel (
         data class ChangePrice(val price: Int) : ClubUserIntent
         data class UpdateClub(val sectionDetails: SectionDetails) : ClubUserIntent
         data class AddClub(val sectionDetails: SectionDetails) : ClubUserIntent
-        data class NavigateToDetails(val sectionId: Long, val isAddingItem: Boolean) : ClubUserIntent
-        data object ChangeSelected: ClubUserIntent
+        data class NavigateToDetails(val sectionId: Long, val isAddingItem: Boolean) :
+            ClubUserIntent
+
+        data object ChangeSelected : ClubUserIntent
     }
 
     sealed interface ClubEvent {
-        data class NavigateToDetails(val sectionId: Long, val isAdmin: Boolean, val isAddingItem: Boolean) : ClubEvent
+        data class NavigateToDetails(
+            val sectionId: Long,
+            val isAdmin: Boolean,
+            val isAddingItem: Boolean
+        ) : ClubEvent
+
         data object EmptyData : ClubEvent
     }
 

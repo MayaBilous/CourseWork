@@ -30,10 +30,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.coursework.presentation.ShowDialog
-import com.example.coursework.presentation.club.mvi.ClubViewModel.*
 import com.example.coursework.presentation.club.mvi.ClubViewModel
+import com.example.coursework.presentation.club.mvi.ClubViewModel.ClubEvent
+import com.example.coursework.presentation.club.mvi.ClubViewModel.ClubUserIntent
 import com.example.coursework.presentation.root.SectionDetailsNavigation
-import com.example.coursework.presentation.root.SectionsListNavigation
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -177,39 +177,57 @@ fun ClubScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 if (state.isAdmin) {
-                    Button(onClick = { viewModel.process(ClubUserIntent.NavigateToDetails(state.sectionId, false)) },
+                    Button(
+                        onClick = {
+                            viewModel.process(
+                                ClubUserIntent.NavigateToDetails(
+                                    state.sectionId,
+                                    false
+                                )
+                            )
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF4080f0)
-                        )) {
+                        )
+                    ) {
                         Text("Cancel")
                     }
-                }else {
+                } else {
                     Column {
-                        Text(text = "Add to desired",
+                        Text(
+                            text = "Add to desired",
                             fontWeight = FontWeight.Bold,
-                            fontSize = 15.sp )
+                            fontSize = 15.sp
+                        )
 
                         Checkbox(
                             checked = state.sectionDetails.isSelected,
-                            onCheckedChange = {viewModel.process(ClubUserIntent.ChangeSelected)},
+                            onCheckedChange = { viewModel.process(ClubUserIntent.ChangeSelected) },
                         )
                     }
                 }
 
-                Button(onClick = {
-                    if (state.isAdmin) {
-                        if (state.isAddingItem){
-                            viewModel.process(ClubUserIntent.AddClub(state.sectionDetails))
-                        }else{
-                            viewModel.process(ClubUserIntent.UpdateClub(state.sectionDetails))
+                Button(
+                    onClick = {
+                        if (state.isAdmin) {
+                            if (state.isAddingItem) {
+                                viewModel.process(ClubUserIntent.AddClub(state.sectionDetails))
+                            } else {
+                                viewModel.process(ClubUserIntent.UpdateClub(state.sectionDetails))
+                            }
+                        } else {
+                            viewModel.process(
+                                ClubUserIntent.NavigateToDetails(
+                                    state.sectionId,
+                                    false
+                                )
+                            )
                         }
-                    }else{
-                        viewModel.process(ClubUserIntent.NavigateToDetails(state.sectionId, false))
-                    }
-                },
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF4080f0)
-                    )) {
+                    )
+                ) {
                     Text("Ok")
                 }
             }

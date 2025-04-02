@@ -12,7 +12,7 @@ class GetSectionListUseCase(
     private val sportSectionListRepository: SportSectionListRepository
 ) : GetSectionList {
 
-    override suspend fun invoke() :List<SportSection> {
+    override suspend fun invoke(): List<SportSection> {
         return sportSectionListRepository.getSportSections()
     }
 }

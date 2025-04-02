@@ -3,7 +3,6 @@ package com.example.coursework.presentation.sectionList
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,8 +15,6 @@ import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -26,8 +23,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -83,11 +78,11 @@ fun SectionListScreen(
             .fillMaxSize()
             .padding(20.dp)
     ) {
-            Image(
-                painter = painterResource(id = R.drawable.sport),
-                contentDescription = "sport",
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
+        Image(
+            painter = painterResource(id = R.drawable.sport),
+            contentDescription = "sport",
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
 
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -168,11 +163,13 @@ fun SectionListScreen(
                                 NavigateToSectionDetails(isAddingItem = true)
                             )
                         })
-            }else{
-                Text(modifier = Modifier.align(Alignment.Top),
+            } else {
+                Text(
+                    modifier = Modifier.align(Alignment.Top),
                     text = "Sum: ${state.sum}",
                     fontWeight = FontWeight.Bold,
-                    fontSize = 15.sp )
+                    fontSize = 15.sp
+                )
             }
         }
     }

@@ -50,14 +50,5 @@ class SportSectionListRepositoryImpl : SportSectionListRepository {
     override suspend fun getDetails(): List<SectionDetails> {
         return mapper.mapToDetailsList(sectionDetailsDao.getDetails())
     }
-
-//    override suspend fun addSectionWithDetails(sportSection: SportSection) {
-//        val section = sportSectionDao.findSectionByName(sportSection.sectionName)
-//        if (section == null) {
-//           sportSectionDao.addSportSection(mapper.mapSectionToDb(sportSection))
-//        }
-//        val sectionDetails: SectionDetails = sportSection.sectionDetails.first().copy(sectionId = sportSectionDao.findSectionByName(sportSection.sectionName))
-//        sectionDetailsDao.addSectionDetails(mapper.mapDetailsToDb(sectionDetails))
-//    }
 }
 

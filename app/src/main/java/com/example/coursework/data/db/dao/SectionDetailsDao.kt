@@ -4,9 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import androidx.room.Upsert
 import com.example.coursework.data.db.model.DbSectionDetails
-import com.example.coursework.data.db.model.DbSectionWithDetails
 
 @Dao
 interface SectionDetailsDao {

@@ -3,7 +3,6 @@ package com.example.coursework.presentation.sectionList.mvi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.coursework.domain.entity.SportSection
-import com.example.coursework.domain.usecase.DeleteDetails
 import com.example.coursework.domain.usecase.DeleteSectionWithDetails
 import com.example.coursework.domain.usecase.GetSectionList
 import com.example.coursework.domain.usecase.OrderAmount
@@ -106,7 +105,7 @@ class SectionListViewModel(
         val searchText: String,
         val sportSections: List<SportSection>,
         val isSortedAsc: Boolean,
-        val sum : Int,
+        val sum: Int,
 
         ) {
         val uiSportSection: List<SportSection>
@@ -146,9 +145,12 @@ class SectionListViewModel(
     sealed interface SectionListUserIntent {
         data class InputSearchText(val searchText: String) : SectionListUserIntent
         data object Sorting : SectionListUserIntent
-        data class NavigateToSectionDetails(val sectionId: Long = 0, val isAddingItem: Boolean) : SectionListUserIntent
+        data class NavigateToSectionDetails(val sectionId: Long = 0, val isAddingItem: Boolean) :
+            SectionListUserIntent
+
         data object NavigateToAuth : SectionListUserIntent
-        data class DeleteSportSectionWithDetails(val sportSection: SportSection) : SectionListUserIntent
+        data class DeleteSportSectionWithDetails(val sportSection: SportSection) :
+            SectionListUserIntent
 
     }
 

@@ -16,7 +16,6 @@ import com.example.coursework.domain.usecase.ChangeDetailsUseCase
 import com.example.coursework.domain.usecase.ChangeSectionUseCase
 import com.example.coursework.domain.usecase.CheckAuthorizationUseCase
 import com.example.coursework.domain.usecase.CheckSectionDetailsUseCase
-import com.example.coursework.domain.usecase.CheckSectionName
 import com.example.coursework.domain.usecase.CheckSectionNameUseCase
 import com.example.coursework.domain.usecase.DeleteDetailsUseCase
 import com.example.coursework.domain.usecase.DeleteSectionWithDetailsUseCase

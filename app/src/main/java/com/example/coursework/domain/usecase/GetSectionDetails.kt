@@ -13,7 +13,7 @@ class GetSectionDetailsUseCase(
     private val sportSectionListRepository: SportSectionListRepository
 ) : GetSectionDetails {
 
-    override suspend fun invoke(sectionDetailsId: Long) : SportSection {
+    override suspend fun invoke(sectionDetailsId: Long): SportSection {
         return sportSectionListRepository.getSportSectionDetails(sectionDetailsId)!!
     }
 }

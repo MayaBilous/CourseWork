@@ -1,10 +1,9 @@
 package com.example.coursework.domain.usecase
 
 import com.example.coursework.domain.boundary.SportSectionListRepository
-import com.example.coursework.domain.entity.SectionDetails
 
 interface OrderAmount {
-    suspend operator fun invoke() : Int
+    suspend operator fun invoke(): Int
 }
 
 class OrderAmountUseCase(
