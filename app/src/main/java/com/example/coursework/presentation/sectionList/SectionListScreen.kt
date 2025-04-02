@@ -96,7 +96,7 @@ fun SectionListScreen(
 
             TextField(modifier = Modifier
                 .width(90.dp)
-                .height(25.dp),
+                .height(50.dp),
                 value = state.searchText,
                 onValueChange = { viewModel.process(InputSearchText(it)) },
                 colors = TextFieldDefaults.textFieldColors(
